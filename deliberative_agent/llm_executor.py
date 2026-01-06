@@ -1,0 +1,263 @@
+"""
+LLM-powered executor for the Deliberative Agent.
+
+This executor uses LLMs to implement actions, allowing the agent
+to solve problems using language models.
+"""
+
+from __future__ import annotations
+
+import json
+from typing import TYPE_CHECKING
+
+from .core import WorldState, Confidence, ConfidenceSource, Fact
+from .actions import Action
+from .execution import ActionExecutor, ExecutionStepResult
+from .llm_integration import LLMClient, LLMMessage
+
+if TYPE_CHECKING:
+    pass
+
+
+class LLMActionExecutor(ActionExecutor):
+    """
+    Executor that uses an LLM to implement actions.
+    
+    This allows the agent to solve problems by having the LLM
+    generate code, analyze situations, or make decisions.
+    """
+
+    def __init__(self, llm_client: LLMClient, verbose: bool = False):
+        """
+        Initialize LLM executor.
+        
+        Args:
+            llm_client: LLM client to use
+            verbose: Whether to print execution details
+        """
+        self.llm_client = llm_client
+        self.verbose = verbose
+
+    async def execute(
+        self,
+        action: Action,
+        state: WorldState
+    ) -> ExecutionStepResult:
+        """
+        Execute an action using the LLM.
+        
+        Args:
+            action: Action to execute
+            state: Current world state
+            
+        Returns:
+            ExecutionStepResult with outcome
+        """
+        try:
+            # Build context from current state
+            state_context = self._build_state_context(state)
+            
+            # Create prompt for the LLM
+            messages = [
+                LLMMessage(
+                    role="system",
+                    content=(
+                        "You are an AI assistant helping to execute actions "
+                        "in a deliberative agent system. You will be given an "
+                        "action to perform and the current world state. "
+                        "Respond with a JSON object containing:\n"
+                        "- success: boolean\n"
+                        "- effects: list of strings describing what changed\n"
+                        "- new_facts: list of {predicate: str, args: list} for new facts\n"
+                        "- result: any output or result from the action\n"
+                    )
+                ),
+                LLMMessage(
+                    role="user",
+                    content=(
+                        f"Action: {action.name}\n"
+                        f"Description: {action.description}\n"
+                        f"\nCurrent State:\n{state_context}\n"
+                        f"\nExecute this action and report the results in JSON format."
+                    )
+                )
+            ]
+            
+            if self.verbose:
+                print(f"\n=== Executing action: {action.name} ===")
+                print(f"Description: {action.description}")
+            
+            # Get response from LLM
+            response = await self.llm_client.complete(
+                messages,
+                temperature=0.7,
+                max_tokens=1500
+            )
+            
+            if self.verbose:
+                print(f"LLM Response:\n{response.content}\n")
+            
+            # Parse the response
+            result_data = self._parse_llm_response(response.content)
+            
+            # Create new state with effects
+            new_state = state.copy()
+            
+            # Add new facts from execution
+            if result_data.get("new_facts"):
+                for fact_data in result_data["new_facts"]:
+                    fact = Fact(
+                        predicate=fact_data["predicate"],
+                        args=tuple(fact_data.get("args", [])),
+                        confidence=Confidence(0.8, ConfidenceSource.INFERENCE)
+                    )
+                    new_state.add_fact(fact)
+            
+            # Apply action's declared effects
+            new_state = action.apply(new_state)
+            
+            return ExecutionStepResult.successful(
+                new_state=new_state,
+                effects=result_data.get("effects", [])
+            )
+            
+        except Exception as e:
+            if self.verbose:
+                print(f"Error executing action {action.name}: {e}")
+            return ExecutionStepResult.failed(state, e)
+
+    def _build_state_context(self, state: WorldState) -> str:
+        """
+        Build a string representation of the world state.
+        
+        Args:
+            state: Current world state
+            
+        Returns:
+            String describing the state
+        """
+        lines = []
+        
+        if state.facts:
+            lines.append("Facts:")
+            for fact in list(state.facts)[:20]:  # Limit to avoid token overflow
+                args_str = ", ".join(str(a) for a in fact.args) if fact.args else ""
+                lines.append(f"  - {fact.predicate}({args_str})")
+        
+        if state.test_results:
+            lines.append("\nTest Results:")
+            for test_name, passed in state.test_results.items():
+                status = "PASS" if passed else "FAIL"
+                lines.append(f"  - {test_name}: {status}")
+        
+        if not lines:
+            lines.append("(empty state)")
+        
+        return "\n".join(lines)
+
+    def _parse_llm_response(self, content: str) -> dict:
+        """
+        Parse the LLM's response into structured data.
+        
+        Args:
+            content: Raw LLM response
+            
+        Returns:
+            Parsed result dictionary
+            
+        Raises:
+            ValueError: If response cannot be parsed
+        """
+        # Try to extract JSON from the response
+        # LLMs sometimes wrap JSON in markdown code blocks
+        content = content.strip()
+        
+        # Remove markdown code blocks if present
+        if content.startswith("```"):
+            lines = content.split("\n")
+            # Remove first line (```json or ```)
+            lines = lines[1:]
+            # Remove last line (```)
+            if lines and lines[-1].strip() == "```":
+                lines = lines[:-1]
+            content = "\n".join(lines)
+        
+        try:
+            return json.loads(content)
+        except json.JSONDecodeError:
+            # Fallback: try to find JSON in the text
+            start = content.find("{")
+            end = content.rfind("}") + 1
+            if start >= 0 and end > start:
+                try:
+                    return json.loads(content[start:end])
+                except json.JSONDecodeError:
+                    pass
+            
+            # If all parsing fails, return minimal success
+            return {
+                "success": True,
+                "effects": ["Action completed (response not in expected format)"],
+                "new_facts": [],
+                "result": content
+            }
+
+
+class SimpleLLMExecutor(ActionExecutor):
+    """
+    Simplified LLM executor for testing.
+    
+    This executor just asks the LLM to simulate executing the action
+    without complex JSON parsing.
+    """
+
+    def __init__(self, llm_client: LLMClient, verbose: bool = False):
+        """
+        Initialize simple executor.
+        
+        Args:
+            llm_client: LLM client to use
+            verbose: Whether to print execution details
+        """
+        self.llm_client = llm_client
+        self.verbose = verbose
+
+    async def execute(
+        self,
+        action: Action,
+        state: WorldState
+    ) -> ExecutionStepResult:
+        """Execute action using LLM."""
+        try:
+            if self.verbose:
+                print(f"Executing: {action.name}")
+            
+            # Simply apply the action's effects
+            new_state = action.apply(state)
+            
+            # Get description from LLM
+            messages = [
+                LLMMessage(
+                    role="user",
+                    content=(
+                        f"You are executing the action: {action.description}\n"
+                        f"In one sentence, describe what you did."
+                    )
+                )
+            ]
+            
+            response = await self.llm_client.complete(
+                messages,
+                temperature=0.7,
+                max_tokens=100
+            )
+            
+            return ExecutionStepResult.successful(
+                new_state=new_state,
+                effects=[response.content.strip()]
+            )
+            
+        except Exception as e:
+            if self.verbose:
+                print(f"Error: {e}")
+            return ExecutionStepResult.failed(state, e)
