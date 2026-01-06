@@ -490,6 +490,12 @@ def create_llm_client(
         
     Raises:
         ValueError: If provider is not supported
+        
+    Note:
+        Model names differ between providers:
+        - Direct providers use their native names (e.g., "claude-3-5-sonnet-20241022")
+        - OpenRouter uses prefixed names (e.g., "anthropic/claude-3.5-sonnet")
+        - See each client's __init__ for default model names
     """
     if provider == LLMProvider.OPENAI:
         return OpenAIClient(api_key=api_key, model=model or "gpt-4")

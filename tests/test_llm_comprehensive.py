@@ -350,16 +350,24 @@ class LLMTestHarness:
         print(f"Results saved to {filename}")
 
 
-# Pytest integration
-@pytest.mark.asyncio
-@pytest.mark.skipif(
-    not os.getenv("OPENAI_API_KEY") and
-    not os.getenv("ANTHROPIC_API_KEY") and
-    not os.getenv("XAI_API_KEY") and
-    not os.getenv("GROQ_API_KEY") and
-    not os.getenv("DEEPSEEK_API_KEY"),
+# Pytest skip condition helper
+def _has_any_api_key() -> bool:
+    """Check if any LLM API key is configured."""
+    return any(
+        os.getenv(f"{provider.value.upper()}_API_KEY")
+        for provider in LLMProvider
+    )
+
+
+SKIP_NO_API_KEYS = pytest.mark.skipif(
+    not _has_any_api_key(),
     reason="No LLM API keys configured"
 )
+
+
+# Pytest integration
+@pytest.mark.asyncio
+@SKIP_NO_API_KEYS
 async def test_medium_problems_all_providers():
     """Test medium difficulty problems with all available providers."""
     harness = LLMTestHarness(verbose=True)
@@ -372,14 +380,7 @@ async def test_medium_problems_all_providers():
 
 
 @pytest.mark.asyncio
-@pytest.mark.skipif(
-    not os.getenv("OPENAI_API_KEY") and
-    not os.getenv("ANTHROPIC_API_KEY") and
-    not os.getenv("XAI_API_KEY") and
-    not os.getenv("GROQ_API_KEY") and
-    not os.getenv("DEEPSEEK_API_KEY"),
-    reason="No LLM API keys configured"
-)
+@SKIP_NO_API_KEYS
 async def test_hard_problems_all_providers():
     """Test hard difficulty problems with all available providers."""
     harness = LLMTestHarness(verbose=True)
@@ -392,14 +393,7 @@ async def test_hard_problems_all_providers():
 
 
 @pytest.mark.asyncio
-@pytest.mark.skipif(
-    not os.getenv("OPENAI_API_KEY") and
-    not os.getenv("ANTHROPIC_API_KEY") and
-    not os.getenv("XAI_API_KEY") and
-    not os.getenv("GROQ_API_KEY") and
-    not os.getenv("DEEPSEEK_API_KEY"),
-    reason="No LLM API keys configured"
-)
+@SKIP_NO_API_KEYS
 async def test_all_problems_all_providers():
     """Test all problems with all available providers."""
     harness = LLMTestHarness(verbose=True)

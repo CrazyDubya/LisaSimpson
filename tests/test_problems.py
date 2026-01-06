@@ -10,7 +10,8 @@ Includes:
 from __future__ import annotations
 
 from dataclasses import dataclass
-from typing import Callable, List
+from enum import Enum
+from typing import Callable, List, Literal
 
 from deliberative_agent import (
     Action,
@@ -23,13 +24,19 @@ from deliberative_agent import (
 )
 
 
+class Difficulty(str, Enum):
+    """Problem difficulty levels."""
+    MEDIUM = "medium"
+    HARD = "hard"
+
+
 @dataclass
 class TestProblem:
     """A test problem for evaluating the agent."""
     
     name: str
     description: str
-    difficulty: str  # 'medium' or 'hard'
+    difficulty: Difficulty
     initial_state: WorldState
     goal: Goal
     available_actions: List[Action]
@@ -100,7 +107,7 @@ def create_medium_problems() -> List[TestProblem]:
     problems.append(TestProblem(
         name="Sequential Project Setup",
         description="Set up a new project with directories, git, and README in sequence",
-        difficulty="medium",
+        difficulty=Difficulty.MEDIUM,
         initial_state=initial_state,
         goal=goal,
         available_actions=actions,
@@ -168,7 +175,7 @@ def create_medium_problems() -> List[TestProblem]:
     problems.append(TestProblem(
         name="Parallel Component Development",
         description="Develop frontend and backend in parallel, then integrate",
-        difficulty="medium",
+        difficulty=Difficulty.MEDIUM,
         initial_state=initial_state2,
         goal=goal2,
         available_actions=actions2,
@@ -233,7 +240,7 @@ def create_medium_problems() -> List[TestProblem]:
     problems.append(TestProblem(
         name="Conditional Data Processing",
         description="Fetch data from appropriate source and process it",
-        difficulty="medium",
+        difficulty=Difficulty.MEDIUM,
         initial_state=initial_state3,
         goal=goal3,
         available_actions=actions3,
@@ -336,7 +343,7 @@ def create_hard_problems() -> List[TestProblem]:
     problems.append(TestProblem(
         name="Safe Production Deployment",
         description="Deploy to production with backup, testing, verification, and rollback capability",
-        difficulty="hard",
+        difficulty=Difficulty.HARD,
         initial_state=initial_state,
         goal=goal,
         available_actions=actions,
@@ -447,7 +454,7 @@ def create_hard_problems() -> List[TestProblem]:
     problems.append(TestProblem(
         name="Complex Backend Development",
         description="Develop complete backend system with complex dependencies",
-        difficulty="hard",
+        difficulty=Difficulty.HARD,
         initial_state=initial_state2,
         goal=goal2,
         available_actions=actions2,
@@ -543,7 +550,7 @@ def create_hard_problems() -> List[TestProblem]:
     problems.append(TestProblem(
         name="Quality Solution Under Constraints",
         description="Implement quality solution within budget and time constraints",
-        difficulty="hard",
+        difficulty=Difficulty.HARD,
         initial_state=initial_state3,
         goal=goal3,
         available_actions=actions3,
@@ -564,10 +571,14 @@ def get_problems_by_difficulty(difficulty: str) -> List[TestProblem]:
     Get problems of a specific difficulty.
     
     Args:
-        difficulty: 'medium' or 'hard'
+        difficulty: Difficulty level (Difficulty.MEDIUM or Difficulty.HARD, or string 'medium'/'hard')
         
     Returns:
         List of problems with that difficulty
     """
+    # Convert string to enum if needed
+    if isinstance(difficulty, str):
+        difficulty = Difficulty(difficulty)
+    
     all_problems = get_all_problems()
     return [p for p in all_problems if p.difficulty == difficulty]
