@@ -21,34 +21,34 @@ Export your API keys as environment variables:
 
 ```bash
 # OpenAI
-export OPENAI_API_KEY=sk-proj-VAWVN8ilhxbvQ47CtJGpT3BlbkFJBDVADauzno852TqzvgaV
+export OPENAI_API_KEY=your_openai_api_key_here
 
 # Anthropic (Claude)
-export ANTHROPIC_API_KEY=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
+export ANTHROPIC_API_KEY=your_anthropic_api_key_here
 
 # XAI (Grok)
-export XAI_API_KEY=xai-z4RK1RiQpcxbrprxdshRSKdykgyg4CGEHDKtwp1FqdAKp0lfSsnXbRFlgJieIHRjDwasEbqMqZz9wPC1
+export XAI_API_KEY=your_xai_api_key_here
 
 # Groq
-export GROQ_API_KEY=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
+export GROQ_API_KEY=your_groq_api_key_here
 
 # DeepSeek
-export DEEPSEEK_API_KEY=sk-dacc02f461b54bbfbc7af309604d3e39
+export DEEPSEEK_API_KEY=your_deepseek_api_key_here
 
 # OpenRouter (optional)
-export OPENROUTER_API_KEY=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
+export OPENROUTER_API_KEY=your_openrouter_api_key_here
 ```
 
 You can also create a `.env` file:
 
 ```bash
 cat > .env << 'EOF'
-OPENAI_API_KEY=sk-proj-VAWVN8ilhxbvQ47CtJGpT3BlbkFJBDVADauzno852TqzvgaV
-ANTHROPIC_API_KEY=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
-XAI_API_KEY=xai-z4RK1RiQpcxbrprxdshRSKdykgyg4CGEHDKtwp1FqdAKp0lfSsnXbRFlgJieIHRjDwasEbqMqZz9wPC1
-GROQ_API_KEY=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
-DEEPSEEK_API_KEY=sk-dacc02f461b54bbfbc7af309604d3e39
-OPENROUTER_API_KEY=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
+OPENAI_API_KEY=your_openai_api_key_here
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+XAI_API_KEY=your_xai_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
+DEEPSEEK_API_KEY=your_deepseek_api_key_here
+OPENROUTER_API_KEY=your_openrouter_api_key_here
 EOF
 
 # Load environment variables

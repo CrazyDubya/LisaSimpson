@@ -134,7 +134,7 @@ class LLMTestHarness:
             
             return TestResult(
                 provider=provider.value,
-                model=client.client._client_wrapper._client._default_model if hasattr(client.client, '_client_wrapper') else "unknown",
+                model=client.get_model_name(),
                 problem_name=problem.name,
                 problem_difficulty=problem.difficulty,
                 success=success,

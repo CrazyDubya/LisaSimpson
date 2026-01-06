@@ -75,6 +75,11 @@ class LLMClient(ABC):
         """Get the name of this provider."""
         ...
 
+    @abstractmethod
+    def get_model_name(self) -> str:
+        """Get the model name being used."""
+        ...
+
 
 class OpenAIClient(LLMClient):
     """OpenAI client."""
@@ -130,6 +135,10 @@ class OpenAIClient(LLMClient):
     def get_provider_name(self) -> str:
         """Get provider name."""
         return "openai"
+
+    def get_model_name(self) -> str:
+        """Get model name."""
+        return self.model
 
 
 class AnthropicClient(LLMClient):
@@ -197,6 +206,10 @@ class AnthropicClient(LLMClient):
         """Get provider name."""
         return "anthropic"
 
+    def get_model_name(self) -> str:
+        """Get model name."""
+        return self.model
+
 
 class XAIClient(LLMClient):
     """XAI (Grok) client - uses OpenAI-compatible API."""
@@ -255,6 +268,10 @@ class XAIClient(LLMClient):
     def get_provider_name(self) -> str:
         """Get provider name."""
         return "xai"
+
+    def get_model_name(self) -> str:
+        """Get model name."""
+        return self.model
 
 
 class GroqClient(LLMClient):
@@ -315,6 +332,10 @@ class GroqClient(LLMClient):
     def get_provider_name(self) -> str:
         """Get provider name."""
         return "groq"
+
+    def get_model_name(self) -> str:
+        """Get model name."""
+        return self.model
 
 
 class DeepSeekClient(LLMClient):
@@ -379,6 +400,10 @@ class DeepSeekClient(LLMClient):
         """Get provider name."""
         return "deepseek"
 
+    def get_model_name(self) -> str:
+        """Get model name."""
+        return self.model
+
 
 class OpenRouterClient(LLMClient):
     """OpenRouter client - aggregator supporting multiple models."""
@@ -441,6 +466,10 @@ class OpenRouterClient(LLMClient):
     def get_provider_name(self) -> str:
         """Get provider name."""
         return "openrouter"
+
+    def get_model_name(self) -> str:
+        """Get model name."""
+        return self.model
 
 
 def create_llm_client(
