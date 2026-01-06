@@ -25,7 +25,14 @@ from deliberative_agent import (
 
 
 class Difficulty(str, Enum):
-    """Problem difficulty levels."""
+    """
+    Problem difficulty levels.
+    
+    Inherits from both str and Enum to allow:
+    1. Type-safe enum usage: Difficulty.MEDIUM
+    2. String comparison: difficulty == "medium"
+    3. JSON serialization without custom encoders
+    """
     MEDIUM = "medium"
     HARD = "hard"
 

@@ -496,6 +496,11 @@ def create_llm_client(
         - Direct providers use their native names (e.g., "claude-3-5-sonnet-20241022")
         - OpenRouter uses prefixed names (e.g., "anthropic/claude-3.5-sonnet")
         - See each client's __init__ for default model names
+        
+        If a model is deprecated:
+        1. Check provider's documentation for the replacement model
+        2. Update the default in this function or pass the new model name explicitly
+        3. The client will raise an error if the model is invalid, allowing graceful fallback
     """
     if provider == LLMProvider.OPENAI:
         return OpenAIClient(api_key=api_key, model=model or "gpt-4")

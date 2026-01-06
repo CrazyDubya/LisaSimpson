@@ -202,10 +202,14 @@ class LLMActionExecutor(ActionExecutor):
                 except json.JSONDecodeError:
                     pass
             
-            # If all parsing fails, return minimal success
+            # If all parsing fails, log warning and return a result indicating parsing issue
+            # This is still marked as success because the LLM did respond, but we flag it
+            if self.verbose:
+                print(f"WARNING: Could not parse LLM response as JSON. Raw response: {content[:200]}...")
+            
             return {
                 "success": True,
-                "effects": ["Action completed (response not in expected format)"],
+                "effects": ["Action completed (LLM response not in expected JSON format - check logs)"],
                 "new_facts": [],
                 "result": content
             }
