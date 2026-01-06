@@ -1,0 +1,1045 @@
+{
+  "runs": [
+    {
+      "run_id": "benchmark_20260106_185645",
+      "timestamp": "2026-01-06T18:57:40.688719",
+      "problems_tested": [
+        "medium_reasoning_01",
+        "medium_code_01",
+        "medium_math_01",
+        "medium_logic_01",
+        "medium_debug_01",
+        "medium_planning_01",
+        "medium_multi_01",
+        "medium_edge_01",
+        "medium_string_01",
+        "medium_semantic_01"
+      ],
+      "duration_seconds": 54.87236762046814,
+      "config": {
+        "difficulty": null,
+        "category": null,
+        "provider_names": null
+      },
+      "provider_results": {
+        "anthropic_claude": {
+          "provider_name": "anthropic",
+          "model": "claude-3-5-sonnet-20241022",
+          "problems_attempted": 10,
+          "problems_correct": 0,
+          "accuracy": 0.0,
+          "total_latency_ms": 1411.9515419006348,
+          "avg_latency_ms": 141.19515419006348,
+          "total_tokens": 0,
+          "errors": [],
+          "results": [
+            {
+              "problem_id": "medium_reasoning_01",
+              "provider": "anthropic",
+              "model": "claude-3-5-sonnet-20241022",
+              "is_correct": false,
+              "latency_ms": 186.74325942993164,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CWrdnUTWmYwYSk9yrVWiP\"}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_code_01",
+              "provider": "anthropic",
+              "model": "claude-3-5-sonnet-20241022",
+              "is_correct": false,
+              "latency_ms": 170.30596733093262,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CWrdnUVzgmurzK6NpApCd\"}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_math_01",
+              "provider": "anthropic",
+              "model": "claude-3-5-sonnet-20241022",
+              "is_correct": false,
+              "latency_ms": 130.1586627960205,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CWrdnUU1ihMf41N7vPnv2\"}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_logic_01",
+              "provider": "anthropic",
+              "model": "claude-3-5-sonnet-20241022",
+              "is_correct": false,
+              "latency_ms": 209.14721488952637,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CWrdnVBBMKcBTDx1Jzkbv\"}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_debug_01",
+              "provider": "anthropic",
+              "model": "claude-3-5-sonnet-20241022",
+              "is_correct": false,
+              "latency_ms": 101.38487815856934,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CWrdnV8T2mQ69duFvwxJq\"}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_planning_01",
+              "provider": "anthropic",
+              "model": "claude-3-5-sonnet-20241022",
+              "is_correct": false,
+              "latency_ms": 144.98162269592285,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CWrdnVBvPLrmgbT8Bds3k\"}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_multi_01",
+              "provider": "anthropic",
+              "model": "claude-3-5-sonnet-20241022",
+              "is_correct": false,
+              "latency_ms": 140.52295684814453,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CWrdnVbyGwJq28q5p46VD\"}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_edge_01",
+              "provider": "anthropic",
+              "model": "claude-3-5-sonnet-20241022",
+              "is_correct": false,
+              "latency_ms": 101.77469253540039,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CWrdnVntHNhb8oiNgsWLs\"}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_string_01",
+              "provider": "anthropic",
+              "model": "claude-3-5-sonnet-20241022",
+              "is_correct": false,
+              "latency_ms": 109.00211334228516,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CWrdnVu5tRFfVx1PHVwhB\"}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_semantic_01",
+              "provider": "anthropic",
+              "model": "claude-3-5-sonnet-20241022",
+              "is_correct": false,
+              "latency_ms": 117.93017387390137,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"type\":\"error\",\"error\":{\"type\":\"authentication_error\",\"message\":\"invalid x-api-key\"},\"request_id\":\"req_011CWrdnWBT9YCySC8LQ53T7\"}",
+              "response_preview": ""
+            }
+          ]
+        },
+        "openai_gpt4o": {
+          "provider_name": "openai",
+          "model": "gpt-4o",
+          "problems_attempted": 10,
+          "problems_correct": 0,
+          "accuracy": 0.0,
+          "total_latency_ms": 1136.7175579071045,
+          "avg_latency_ms": 113.67175579071045,
+          "total_tokens": 0,
+          "errors": [],
+          "results": [
+            {
+              "problem_id": "medium_reasoning_01",
+              "provider": "openai",
+              "model": "gpt-4o",
+              "is_correct": false,
+              "latency_ms": 110.12053489685059,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************vgaV. You can find your API key at https://platform.openai.com/account/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"code\": \"invalid_api_key\",\n    \"param\": null\n  },\n  \"status\": 401\n}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_code_01",
+              "provider": "openai",
+              "model": "gpt-4o",
+              "is_correct": false,
+              "latency_ms": 176.65791511535645,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************vgaV. You can find your API key at https://platform.openai.com/account/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"code\": \"invalid_api_key\",\n    \"param\": null\n  },\n  \"status\": 401\n}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_math_01",
+              "provider": "openai",
+              "model": "gpt-4o",
+              "is_correct": false,
+              "latency_ms": 132.94649124145508,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************vgaV. You can find your API key at https://platform.openai.com/account/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"code\": \"invalid_api_key\",\n    \"param\": null\n  },\n  \"status\": 401\n}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_logic_01",
+              "provider": "openai",
+              "model": "gpt-4o",
+              "is_correct": false,
+              "latency_ms": 85.97779273986816,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************vgaV. You can find your API key at https://platform.openai.com/account/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"code\": \"invalid_api_key\",\n    \"param\": null\n  },\n  \"status\": 401\n}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_debug_01",
+              "provider": "openai",
+              "model": "gpt-4o",
+              "is_correct": false,
+              "latency_ms": 124.14693832397461,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************vgaV. You can find your API key at https://platform.openai.com/account/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"code\": \"invalid_api_key\",\n    \"param\": null\n  },\n  \"status\": 401\n}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_planning_01",
+              "provider": "openai",
+              "model": "gpt-4o",
+              "is_correct": false,
+              "latency_ms": 125.92554092407227,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************vgaV. You can find your API key at https://platform.openai.com/account/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"code\": \"invalid_api_key\",\n    \"param\": null\n  },\n  \"status\": 401\n}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_multi_01",
+              "provider": "openai",
+              "model": "gpt-4o",
+              "is_correct": false,
+              "latency_ms": 132.88068771362305,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************vgaV. You can find your API key at https://platform.openai.com/account/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"code\": \"invalid_api_key\",\n    \"param\": null\n  },\n  \"status\": 401\n}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_edge_01",
+              "provider": "openai",
+              "model": "gpt-4o",
+              "is_correct": false,
+              "latency_ms": 58.585166931152344,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************vgaV. You can find your API key at https://platform.openai.com/account/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"code\": \"invalid_api_key\",\n    \"param\": null\n  },\n  \"status\": 401\n}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_string_01",
+              "provider": "openai",
+              "model": "gpt-4o",
+              "is_correct": false,
+              "latency_ms": 92.32354164123535,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************vgaV. You can find your API key at https://platform.openai.com/account/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"code\": \"invalid_api_key\",\n    \"param\": null\n  },\n  \"status\": 401\n}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_semantic_01",
+              "provider": "openai",
+              "model": "gpt-4o",
+              "is_correct": false,
+              "latency_ms": 97.1529483795166,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\n  \"error\": {\n    \"message\": \"Incorrect API key provided: sk-proj-********************************************vgaV. You can find your API key at https://platform.openai.com/account/api-keys.\",\n    \"type\": \"invalid_request_error\",\n    \"code\": \"invalid_api_key\",\n    \"param\": null\n  },\n  \"status\": 401\n}",
+              "response_preview": ""
+            }
+          ]
+        },
+        "xai_grok": {
+          "provider_name": "xai",
+          "model": "grok-2-latest",
+          "problems_attempted": 10,
+          "problems_correct": 0,
+          "accuracy": 0.0,
+          "total_latency_ms": 895.1413631439209,
+          "avg_latency_ms": 89.51413631439209,
+          "total_tokens": 0,
+          "errors": [],
+          "results": [
+            {
+              "problem_id": "medium_reasoning_01",
+              "provider": "xai",
+              "model": "grok-2-latest",
+              "is_correct": false,
+              "latency_ms": 97.82600402832031,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_code_01",
+              "provider": "xai",
+              "model": "grok-2-latest",
+              "is_correct": false,
+              "latency_ms": 97.84150123596191,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_math_01",
+              "provider": "xai",
+              "model": "grok-2-latest",
+              "is_correct": false,
+              "latency_ms": 97.74327278137207,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_logic_01",
+              "provider": "xai",
+              "model": "grok-2-latest",
+              "is_correct": false,
+              "latency_ms": 100.93069076538086,
+              "tokens_used": 0,
+              "error": "HTTP 403: error code: 1010",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_debug_01",
+              "provider": "xai",
+              "model": "grok-2-latest",
+              "is_correct": false,
+              "latency_ms": 87.30363845825195,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_planning_01",
+              "provider": "xai",
+              "model": "grok-2-latest",
+              "is_correct": false,
+              "latency_ms": 99.37739372253418,
+              "tokens_used": 0,
+              "error": "HTTP 403: error code: 1010",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_multi_01",
+              "provider": "xai",
+              "model": "grok-2-latest",
+              "is_correct": false,
+              "latency_ms": 81.57467842102051,
+              "tokens_used": 0,
+              "error": "HTTP 403: error code: 1010",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_edge_01",
+              "provider": "xai",
+              "model": "grok-2-latest",
+              "is_correct": false,
+              "latency_ms": 43.87092590332031,
+              "tokens_used": 0,
+              "error": "HTTP 403: error code: 1010",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_string_01",
+              "provider": "xai",
+              "model": "grok-2-latest",
+              "is_correct": false,
+              "latency_ms": 104.7980785369873,
+              "tokens_used": 0,
+              "error": "HTTP 403: error code: 1010",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_semantic_01",
+              "provider": "xai",
+              "model": "grok-2-latest",
+              "is_correct": false,
+              "latency_ms": 83.87517929077148,
+              "tokens_used": 0,
+              "error": "HTTP 403: error code: 1010",
+              "response_preview": ""
+            }
+          ]
+        },
+        "openrouter_claude": {
+          "provider_name": "openrouter",
+          "model": "anthropic/claude-3.5-sonnet",
+          "problems_attempted": 10,
+          "problems_correct": 0,
+          "accuracy": 0.0,
+          "total_latency_ms": 5302.083730697632,
+          "avg_latency_ms": 530.2083730697632,
+          "total_tokens": 0,
+          "errors": [],
+          "results": [
+            {
+              "problem_id": "medium_reasoning_01",
+              "provider": "openrouter",
+              "model": "anthropic/claude-3.5-sonnet",
+              "is_correct": false,
+              "latency_ms": 81.87675476074219,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_code_01",
+              "provider": "openrouter",
+              "model": "anthropic/claude-3.5-sonnet",
+              "is_correct": false,
+              "latency_ms": 277.6815891265869,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_math_01",
+              "provider": "openrouter",
+              "model": "anthropic/claude-3.5-sonnet",
+              "is_correct": false,
+              "latency_ms": 2374.85933303833,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_logic_01",
+              "provider": "openrouter",
+              "model": "anthropic/claude-3.5-sonnet",
+              "is_correct": false,
+              "latency_ms": 65.77730178833008,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_debug_01",
+              "provider": "openrouter",
+              "model": "anthropic/claude-3.5-sonnet",
+              "is_correct": false,
+              "latency_ms": 186.56516075134277,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_planning_01",
+              "provider": "openrouter",
+              "model": "anthropic/claude-3.5-sonnet",
+              "is_correct": false,
+              "latency_ms": 67.78383255004883,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_multi_01",
+              "provider": "openrouter",
+              "model": "anthropic/claude-3.5-sonnet",
+              "is_correct": false,
+              "latency_ms": 76.09868049621582,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_edge_01",
+              "provider": "openrouter",
+              "model": "anthropic/claude-3.5-sonnet",
+              "is_correct": false,
+              "latency_ms": 85.0670337677002,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_string_01",
+              "provider": "openrouter",
+              "model": "anthropic/claude-3.5-sonnet",
+              "is_correct": false,
+              "latency_ms": 136.3058090209961,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_semantic_01",
+              "provider": "openrouter",
+              "model": "anthropic/claude-3.5-sonnet",
+              "is_correct": false,
+              "latency_ms": 1950.0682353973389,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+              "response_preview": ""
+            }
+          ]
+        },
+        "openrouter_gpt4": {
+          "provider_name": "openrouter",
+          "model": "openai/gpt-4-turbo",
+          "problems_attempted": 10,
+          "problems_correct": 0,
+          "accuracy": 0.0,
+          "total_latency_ms": 977.4696826934814,
+          "avg_latency_ms": 97.74696826934814,
+          "total_tokens": 0,
+          "errors": [],
+          "results": [
+            {
+              "problem_id": "medium_reasoning_01",
+              "provider": "openrouter",
+              "model": "openai/gpt-4-turbo",
+              "is_correct": false,
+              "latency_ms": 64.90755081176758,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_code_01",
+              "provider": "openrouter",
+              "model": "openai/gpt-4-turbo",
+              "is_correct": false,
+              "latency_ms": 133.57996940612793,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_math_01",
+              "provider": "openrouter",
+              "model": "openai/gpt-4-turbo",
+              "is_correct": false,
+              "latency_ms": 149.4162082672119,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_logic_01",
+              "provider": "openrouter",
+              "model": "openai/gpt-4-turbo",
+              "is_correct": false,
+              "latency_ms": 66.87545776367188,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_debug_01",
+              "provider": "openrouter",
+              "model": "openai/gpt-4-turbo",
+              "is_correct": false,
+              "latency_ms": 79.6661376953125,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_planning_01",
+              "provider": "openrouter",
+              "model": "openai/gpt-4-turbo",
+              "is_correct": false,
+              "latency_ms": 98.75965118408203,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_multi_01",
+              "provider": "openrouter",
+              "model": "openai/gpt-4-turbo",
+              "is_correct": false,
+              "latency_ms": 64.20040130615234,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_edge_01",
+              "provider": "openrouter",
+              "model": "openai/gpt-4-turbo",
+              "is_correct": false,
+              "latency_ms": 80.45387268066406,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_string_01",
+              "provider": "openrouter",
+              "model": "openai/gpt-4-turbo",
+              "is_correct": false,
+              "latency_ms": 65.34790992736816,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_semantic_01",
+              "provider": "openrouter",
+              "model": "openai/gpt-4-turbo",
+              "is_correct": false,
+              "latency_ms": 174.26252365112305,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+              "response_preview": ""
+            }
+          ]
+        },
+        "openrouter_llama": {
+          "provider_name": "openrouter",
+          "model": "meta-llama/llama-3.1-405b-instruct",
+          "problems_attempted": 10,
+          "problems_correct": 0,
+          "accuracy": 0.0,
+          "total_latency_ms": 942.0938491821289,
+          "avg_latency_ms": 94.20938491821289,
+          "total_tokens": 0,
+          "errors": [],
+          "results": [
+            {
+              "problem_id": "medium_reasoning_01",
+              "provider": "openrouter",
+              "model": "meta-llama/llama-3.1-405b-instruct",
+              "is_correct": false,
+              "latency_ms": 68.92085075378418,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_code_01",
+              "provider": "openrouter",
+              "model": "meta-llama/llama-3.1-405b-instruct",
+              "is_correct": false,
+              "latency_ms": 85.0827693939209,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_math_01",
+              "provider": "openrouter",
+              "model": "meta-llama/llama-3.1-405b-instruct",
+              "is_correct": false,
+              "latency_ms": 239.0291690826416,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_logic_01",
+              "provider": "openrouter",
+              "model": "meta-llama/llama-3.1-405b-instruct",
+              "is_correct": false,
+              "latency_ms": 16.092538833618164,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_debug_01",
+              "provider": "openrouter",
+              "model": "meta-llama/llama-3.1-405b-instruct",
+              "is_correct": false,
+              "latency_ms": 180.21702766418457,
+              "tokens_used": 0,
+              "error": "HTTP 401: {\"error\":{\"message\":\"User not found.\",\"code\":401}}",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_planning_01",
+              "provider": "openrouter",
+              "model": "meta-llama/llama-3.1-405b-instruct",
+              "is_correct": false,
+              "latency_ms": 84.47265625,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_multi_01",
+              "provider": "openrouter",
+              "model": "meta-llama/llama-3.1-405b-instruct",
+              "is_correct": false,
+              "latency_ms": 65.99593162536621,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_edge_01",
+              "provider": "openrouter",
+              "model": "meta-llama/llama-3.1-405b-instruct",
+              "is_correct": false,
+              "latency_ms": 81.07686042785645,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_string_01",
+              "provider": "openrouter",
+              "model": "meta-llama/llama-3.1-405b-instruct",
+              "is_correct": false,
+              "latency_ms": 56.369781494140625,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_semantic_01",
+              "provider": "openrouter",
+              "model": "meta-llama/llama-3.1-405b-instruct",
+              "is_correct": false,
+              "latency_ms": 64.83626365661621,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            }
+          ]
+        },
+        "groq_llama": {
+          "provider_name": "groq",
+          "model": "llama-3.3-70b-versatile",
+          "problems_attempted": 10,
+          "problems_correct": 0,
+          "accuracy": 0.0,
+          "total_latency_ms": 989.3832206726074,
+          "avg_latency_ms": 98.93832206726074,
+          "total_tokens": 0,
+          "errors": [],
+          "results": [
+            {
+              "problem_id": "medium_reasoning_01",
+              "provider": "groq",
+              "model": "llama-3.3-70b-versatile",
+              "is_correct": false,
+              "latency_ms": 82.78918266296387,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_code_01",
+              "provider": "groq",
+              "model": "llama-3.3-70b-versatile",
+              "is_correct": false,
+              "latency_ms": 84.3343734741211,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_math_01",
+              "provider": "groq",
+              "model": "llama-3.3-70b-versatile",
+              "is_correct": false,
+              "latency_ms": 108.64996910095215,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_logic_01",
+              "provider": "groq",
+              "model": "llama-3.3-70b-versatile",
+              "is_correct": false,
+              "latency_ms": 82.20839500427246,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_debug_01",
+              "provider": "groq",
+              "model": "llama-3.3-70b-versatile",
+              "is_correct": false,
+              "latency_ms": 80.56783676147461,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_planning_01",
+              "provider": "groq",
+              "model": "llama-3.3-70b-versatile",
+              "is_correct": false,
+              "latency_ms": 116.03641510009766,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_multi_01",
+              "provider": "groq",
+              "model": "llama-3.3-70b-versatile",
+              "is_correct": false,
+              "latency_ms": 65.59610366821289,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_edge_01",
+              "provider": "groq",
+              "model": "llama-3.3-70b-versatile",
+              "is_correct": false,
+              "latency_ms": 143.78094673156738,
+              "tokens_used": 0,
+              "error": "HTTP 403: error code: 1010",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_string_01",
+              "provider": "groq",
+              "model": "llama-3.3-70b-versatile",
+              "is_correct": false,
+              "latency_ms": 116.90163612365723,
+              "tokens_used": 0,
+              "error": "HTTP 403: error code: 1010",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_semantic_01",
+              "provider": "groq",
+              "model": "llama-3.3-70b-versatile",
+              "is_correct": false,
+              "latency_ms": 108.51836204528809,
+              "tokens_used": 0,
+              "error": "HTTP 403: error code: 1010",
+              "response_preview": ""
+            }
+          ]
+        },
+        "groq_mixtral": {
+          "provider_name": "groq",
+          "model": "mixtral-8x7b-32768",
+          "problems_attempted": 10,
+          "problems_correct": 0,
+          "accuracy": 0.0,
+          "total_latency_ms": 785.4857444763184,
+          "avg_latency_ms": 78.54857444763184,
+          "total_tokens": 0,
+          "errors": [],
+          "results": [
+            {
+              "problem_id": "medium_reasoning_01",
+              "provider": "groq",
+              "model": "mixtral-8x7b-32768",
+              "is_correct": false,
+              "latency_ms": 90.43550491333008,
+              "tokens_used": 0,
+              "error": "HTTP 403: error code: 1010",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_code_01",
+              "provider": "groq",
+              "model": "mixtral-8x7b-32768",
+              "is_correct": false,
+              "latency_ms": 88.83428573608398,
+              "tokens_used": 0,
+              "error": "HTTP 403: error code: 1010",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_math_01",
+              "provider": "groq",
+              "model": "mixtral-8x7b-32768",
+              "is_correct": false,
+              "latency_ms": 63.219308853149414,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_logic_01",
+              "provider": "groq",
+              "model": "mixtral-8x7b-32768",
+              "is_correct": false,
+              "latency_ms": 68.44115257263184,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_debug_01",
+              "provider": "groq",
+              "model": "mixtral-8x7b-32768",
+              "is_correct": false,
+              "latency_ms": 66.19071960449219,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_planning_01",
+              "provider": "groq",
+              "model": "mixtral-8x7b-32768",
+              "is_correct": false,
+              "latency_ms": 57.860374450683594,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_multi_01",
+              "provider": "groq",
+              "model": "mixtral-8x7b-32768",
+              "is_correct": false,
+              "latency_ms": 61.29097938537598,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_edge_01",
+              "provider": "groq",
+              "model": "mixtral-8x7b-32768",
+              "is_correct": false,
+              "latency_ms": 196.2141990661621,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_string_01",
+              "provider": "groq",
+              "model": "mixtral-8x7b-32768",
+              "is_correct": false,
+              "latency_ms": 63.74835968017578,
+              "tokens_used": 0,
+              "error": "HTTP 503: upstream connect error or disconnect/reset before headers. reset reason: remote connection failure, transport failure reason: TLS_error:|268435581:SSL routines:OPENSSL_internal:CERTIFICATE_VERIFY_FAILED:TLS_error_end",
+              "response_preview": ""
+            },
+            {
+              "problem_id": "medium_semantic_01",
+              "provider": "groq",
+              "model": "mixtral-8x7b-32768",
+              "is_correct": false,
+              "latency_ms": 29.2508602142334,
+              "tokens_used": 0,
+              "error": "HTTP 403: error code: 1010",
+              "response_preview": ""
+            }
+          ]
+        },
+        "deepseek_chat": {
+          "provider_name": "deepseek",
+          "model": "deepseek-chat",
+          "problems_attempted": 10,
+          "problems_correct": 9,
+          "accuracy": 0.9,
+          "total_latency_ms": 136011.29150390625,
+          "avg_latency_ms": 13601.129150390625,
+          "total_tokens": 5923,
+          "errors": [],
+          "results": [
+            {
+              "problem_id": "medium_reasoning_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 4077.035665512085,
+              "tokens_used": 224,
+              "error": null,
+              "response_preview": "B\n\nExplanation:  \nFrom \"All programmers are logical thinkers\" and \"Maria is a programmer,\" it follows that Maria must be a logical thinker.  \nThe other options are not necessarily true:  \n- A) Maria could be a mathematician, but it's not guaranteed.  \n- C) The statements allow overlap but don't require some programmers to be mathematicians.  \n- D) This reverses the first statement incorrectly."
+            },
+            {
+              "problem_id": "medium_code_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 7304.845094680786,
+              "tokens_used": 384,
+              "error": null,
+              "response_preview": "```python\ndef fizz_buzz_plus(n):\n    def is_prime(num):\n        if num < 2:\n            return False\n        if num == 2:\n            return True\n        if num % 2 == 0:\n            return False\n        for i in range(3, int(num**0.5) + 1, 2):\n            if num % i == 0:\n                return False\n        return True\n    \n    prime_count = 0\n    for i in range(1, n + 1):\n        divisible_by_3 = i % 3 == 0\n        divisible_by_5 = i % 5 == 0\n        \n        if divisible_by_3 and divisible_b"
+            },
+            {
+              "problem_id": "medium_math_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": false,
+              "latency_ms": 18164.180278778076,
+              "tokens_used": 742,
+              "error": null,
+              "response_preview": "Alright, let\u2019s go step-by-step.\n\n---\n\n## **Step 1: Understand the problem**\n\nWe have:\n\n- Red balls: \\( 5 \\)\n- Blue balls: \\( 3 \\)\n- Green balls: \\( 2 \\)\n\nTotal balls: \\( 5 + 3 + 2 = 10 \\)\n\nWe draw **two balls without replacement**.\n\n---\n\n## **Step 2: Probability both balls are the same color**\n\nPossible same-color cases:  \n1. Both red  \n2. Both blue  \n3. Both green  \n\n---\n\n### **Case 1: Both red**\n\\[\nP(\\text{both red}) = \\frac{5}{10} \\times \\frac{4}{9} = \\frac{20}{90} = \\frac{2}{9}\n\\]\n\n---\n\n### "
+            },
+            {
+              "problem_id": "medium_logic_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 12777.65703201294,
+              "tokens_used": 516,
+              "error": null,
+              "response_preview": "Let\u2019s go step by step.\n\n---\n\n**Step 1: Understanding the statement**\n\nA says: *\"At least one of us is a knave.\"*\n\nLet\u2019s define:\n\n- Knight = always tells the truth.\n- Knave = always lies.\n\nLet \\( K_A \\) = \"A is a knight\", \\( K_B \\) = \"B is a knight\".  \nIf A is a knight, the statement is true.  \nIf A is a knave, the statement is false.\n\n---\n\n**Step 2: Translate the statement into logic**\n\n\"At least one of us is a knave\" means:  \n\\[\n(\\text{not } K_A) \\text{ or } (\\text{not } K_B)\n\\]\nEquivalently:  "
+            },
+            {
+              "problem_id": "medium_debug_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 13050.31132698059,
+              "tokens_used": 598,
+              "error": null,
+              "response_preview": "The main issues with the current code are:\n\n1. **Self-pairs**: When `i == j`, it checks if a number plus itself equals the target (e.g., `2.5 + 2.5 = 5`), which is usually not desired unless explicitly allowed.\n2. **Duplicate pairs**: It counts both `(i, j)` and `(j, i)` as separate pairs when `i \u2260 j`.\n3. **Inefficiency**: It uses a nested loop over the entire list for both indices, resulting in O(n\u00b2) time complexity, but with unnecessary checks.\n\nThe typical fix is to start the inner loop from "
+            },
+            {
+              "problem_id": "medium_planning_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 32935.45174598694,
+              "tokens_used": 1312,
+              "error": null,
+              "response_preview": "Let\u2019s break this down step by step.  \n\n---\n\n## **1. Understanding the dependencies**\n\nWe have:\n\n- **A** \u2192 no dependencies, duration = 2h  \n- **B** \u2192 depends on A, duration = 3h  \n- **C** \u2192 depends on A, duration = 1h  \n- **D** \u2192 depends on B and C, duration = 2h  \n- **E** \u2192 depends on C, duration = 4h  \n- **F** \u2192 depends on D and E, duration = 1h  \n\nDependency graph:  \n\n```\nA \u2192 B \u2192 D \u2192 F\n  \u2198   \u2197\n    C \u2192 E \u2192 F\n      \u2198   \u2197\n        D\n```\n\nMore clearly:  \n- A \u2192 B  \n- A \u2192 C  \n- B \u2192 D  \n- C \u2192 D  \n- C "
+            },
+            {
+              "problem_id": "medium_multi_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 16843.191623687744,
+              "tokens_used": 719,
+              "error": null,
+              "response_preview": "Let\u2019s reason through this step-by-step.  \n\n**Initial state:**  \nFarmer (F), Wolf (W), Goat (G), Cabbage (C) are on the **left** bank.  \nBoat holds only F + 1 item.  \n\n**Constraints:**  \n- Wolf eats Goat if alone together without F.  \n- Goat eats Cabbage if alone together without F.  \n\n---\n\n**Step 1:**  \nTake Goat across first (Wolf and Cabbage are safe together).  \nTrip 1: Farmer takes Goat (leaving Wolf, Cabbage on original side)  \nLeft bank: W, C  \nRight bank: F, G  \n\n---\n\n**Step 2:**  \nFarmer"
+            },
+            {
+              "problem_id": "medium_edge_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 15076.707601547241,
+              "tokens_used": 635,
+              "error": null,
+              "response_preview": "Here's a Python function that meets all your requirements:\n\n```python\ndef safe_divide(a, b, default=0):\n    \"\"\"\n    Safely divide a by b, returning default for any invalid cases.\n    \n    Args:\n        a: numerator (any type)\n        b: denominator (any type)\n        default: value to return for invalid cases (default: 0)\n    \n    Returns:\n        a/b if valid, otherwise default\n    \"\"\"\n    try:\n        # Convert inputs to float for division\n        numerator = float(a)\n        denominator = flo"
+            },
+            {
+              "problem_id": "medium_string_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 11344.638109207153,
+              "tokens_used": 519,
+              "error": null,
+              "response_preview": "We can solve this by counting character frequencies.  \nA string can form a palindrome if at most one character has an odd count (spaces ignored, case-insensitive).  \n\n**Reasoning:**  \n- Palindromes are symmetric.  \n- For even-length strings (ignoring spaces), all character counts must be even.  \n- For odd-length strings (ignoring spaces), exactly one character can have an odd count.  \n- So in general: **At most one character can have an odd frequency**.  \n\n**Steps:**  \n1. Convert string to lower"
+            },
+            {
+              "problem_id": "medium_semantic_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 4437.273025512695,
+              "tokens_used": 274,
+              "error": null,
+              "response_preview": "1. This function removes consecutive duplicate elements from a list while preserving the order of unique elements.  \n2. A better name would be `remove_consecutive_duplicates`.  \n3. Two edge cases it might not handle well:  \n   - If the input contains mutable objects (like lists or dictionaries), the `!=` comparison may not behave as intended for deep equality.  \n   - If the input is a very long sequence (e.g., a generator), slicing `data[1:]` creates a full copy, which could cause memory issues."
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

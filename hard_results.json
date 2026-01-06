@@ -1,0 +1,141 @@
+{
+  "runs": [
+    {
+      "run_id": "benchmark_20260106_185813",
+      "timestamp": "2026-01-06T19:02:01.797525",
+      "problems_tested": [
+        "hard_reasoning_01",
+        "hard_code_01",
+        "hard_math_01",
+        "hard_logic_01",
+        "hard_debug_01",
+        "hard_planning_01",
+        "hard_multi_01",
+        "hard_design_01",
+        "hard_algo_01",
+        "hard_semantic_01"
+      ],
+      "duration_seconds": 228.01901817321777,
+      "config": {
+        "difficulty": null,
+        "category": null,
+        "provider_names": null
+      },
+      "provider_results": {
+        "deepseek_chat": {
+          "provider_name": "deepseek",
+          "model": "deepseek-chat",
+          "problems_attempted": 10,
+          "problems_correct": 9,
+          "accuracy": 0.9,
+          "total_latency_ms": 599553.5826683044,
+          "avg_latency_ms": 59955.358266830444,
+          "total_tokens": 24013,
+          "errors": [],
+          "results": [
+            {
+              "problem_id": "hard_reasoning_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 107735.56208610535,
+              "tokens_used": 4110,
+              "error": null,
+              "response_preview": "Alright, let\u2019s go step-by-step.\n\n---\n\n## **Step 1 \u2013 Set up the categories**\nWe have 5 houses in a row: positions 1, 2, 3, 4, 5.\n\nCategories:\n- **Color**: Red, Green, White, Yellow, Blue\n- **Nationality**: Brit, Swede, Dane, Norwegian, German\n- **Drink**: Tea, Coffee, Milk, Beer, Water\n- **Smoke**: Pall Mall, Dunhill, Blend, Blue Master, Prince\n- **Pet**: Dogs, Birds, Cats, Horses, Fish\n\n---\n\n## **Step 2 \u2013 Fixed clues**\nFrom clue 9: Norwegian in house 1.  \nFrom clue 14: Norwegian lives next to bl"
+            },
+            {
+              "problem_id": "hard_code_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 31404.839038848877,
+              "tokens_used": 1265,
+              "error": null,
+              "response_preview": "I'll implement an LRU cache using a combination of a hash map (dictionary) and a doubly linked list to achieve O(1) time complexity for both `get` and `put` operations.\n\n```python\nclass Node:\n    \"\"\"Doubly linked list node for LRU cache\"\"\"\n    def __init__(self, key=0, value=0):\n        self.key = key\n        self.value = value\n        self.prev = None\n        self.next = None\n\n\nclass LRUCache:\n    \"\"\"LRU Cache implementation with O(1) get and put operations\"\"\"\n    \n    def __init__(self, capaci"
+            },
+            {
+              "problem_id": "hard_math_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 47414.40653800964,
+              "tokens_used": 1901,
+              "error": null,
+              "response_preview": "Alright, let\u2019s go step-by-step.\n\n---\n\n## **1. Problem Understanding**\n\nWe have:\n\n- Rod length \\( n = 8 \\)\n- Price table:  \n  `prices = [1, 5, 8, 9, 10, 17, 17, 20]`  \n  where `prices[i]` = price for a rod of length `i+1`.\n\nWe can cut the rod into pieces of integer lengths and sell them.  \nWe want to maximize total revenue.\n\n---\n\n## **2. Recurrence Relation**\n\nLet \\( r[k] \\) = maximum revenue obtainable for a rod of length \\( k \\).\n\nWe can either:\n\n- Sell the rod of length \\( k \\) uncut \u2192 revenue"
+            },
+            {
+              "problem_id": "hard_logic_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 113863.93141746521,
+              "tokens_used": 4484,
+              "error": null,
+              "response_preview": "Alright, let's break this down step-by-step.\n\n---\n\n## **Step 1: Understanding the problem**\n\nWe have a \\(4\\times 4\\) grid of people, each either a **truth-teller (T)** or **liar (L)**.\n\nEach person makes a statement about **the number of truth-tellers in their row** or **the number of truth-tellers in their column**, including themselves.\n\nThe statements are fixed as given.\n\nWe need to find:\n\n1. Total number of truth-tellers in the grid.\n2. Which positions are truth-tellers.\n\n---\n\n## **Step 2: R"
+            },
+            {
+              "problem_id": "hard_debug_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 21939.446449279785,
+              "tokens_used": 986,
+              "error": null,
+              "response_preview": "## 1. Explanation of the Race Condition\n\nThe race condition occurs in the `increment()` method:\n\n```python\ndef increment(self):\n    current = self.count  # READ: Thread A reads value (e.g., 5)\n    # Simulate some processing\n    self.count = current + 1  # WRITE: Thread A writes 6\n```\n\n**Scenario where race condition happens:**\n1. Thread A reads `self.count` (value = 5)\n2. Thread B reads `self.count` (value = 5) \n3. Thread A writes `5 + 1 = 6`\n4. Thread B writes `5 + 1 = 6` (should be 7!)\n5. Resu"
+            },
+            {
+              "problem_id": "hard_planning_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 57126.63149833679,
+              "tokens_used": 2316,
+              "error": null,
+              "response_preview": "Alright \u2014 let\u2019s break this down step by step.\n\n---\n\n## **1. Understanding the problem**\n\nWe have **3 machines** (A, B, C) and **6 jobs**, each with a specific sequence of operations and processing times (in hours).  \nWe want to minimize the **makespan** (time when all jobs are finished).\n\nThis is a **job shop scheduling problem** (JSP) with 3 machines and 6 jobs.  \nFinding the exact optimum manually is hard, but we can use heuristics (like the Gantt chart method, or priority dispatch rules) to g"
+            },
+            {
+              "problem_id": "hard_multi_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": false,
+              "latency_ms": 49655.96652030945,
+              "tokens_used": 1979,
+              "error": null,
+              "response_preview": "I'll implement a proper parser using the Shunting Yard algorithm to handle operator precedence and associativity, then evaluate the resulting Reverse Polish Notation (RPN) expression.\n\n```python\nimport operator\nimport math\n\ndef evaluate(expr):\n    \"\"\"\n    Evaluate arithmetic expressions with numbers, +, -, *, /, ^, and parentheses.\n    Precedence: ^ > * / > + -\n    Associativity: ^ is right-to-left, others are left-to-right\n    \"\"\"\n    \n    # Remove whitespace\n    expr = expr.replace(' ', '')\n  "
+            },
+            {
+              "problem_id": "hard_design_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 101530.55429458618,
+              "tokens_used": 3804,
+              "error": null,
+              "response_preview": "I'll design a rate limiter that meets all your requirements using a sliding window counter algorithm.\n\n## 1. High-level Architecture Diagram\n\n```\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502                    Client Request                           \u2502\n\u2514\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u252c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2518\n                        \u2502\n                        \u25bc\n\u250c\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2500\u2510\n\u2502                    Load Balancer            "
+            },
+            {
+              "problem_id": "hard_algo_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 28581.400394439697,
+              "tokens_used": 1357,
+              "error": null,
+              "response_preview": "We can think of this as a shortest path problem in a **state space** where each state is `(node, current_fuel)`.  \nWe start at `(start, max_fuel)` and want to reach `(end, any_fuel)`.  \n\nAt each step:\n- Moving from `u` to `v` with distance `d` is allowed only if `current_fuel >= d`.\n- After moving, fuel decreases by `d`.\n- If `v` is a refuel station, fuel resets to `max_fuel`.\n\nWe use Dijkstra\u2019s algorithm on these states, where the \"distance\" is the total travel distance so far.\n\n---\n\n## Step-by"
+            },
+            {
+              "problem_id": "hard_semantic_01",
+              "provider": "deepseek",
+              "model": "deepseek-chat",
+              "is_correct": true,
+              "latency_ms": 40300.84443092346,
+              "tokens_used": 1811,
+              "error": null,
+              "response_preview": "I'll perform a comprehensive security review of this Flask application, identifying vulnerabilities by severity.\n\n## **Critical Vulnerabilities**\n\n### **1. SQL Injection**\n- **Severity**: Critical\n- **Attack Vector**: `/login` endpoint\n- **Code**: `query = f\"SELECT * FROM users WHERE username='{username}' AND password='{password}'\"`\n- **Impact**: Full database compromise, authentication bypass, data exfiltration\n- **Fix**: Use parameterized queries\n```python\nquery = \"SELECT * FROM users WHERE us"
+            }
+          ]
+        }
+      }
+    }
+  ]
+}

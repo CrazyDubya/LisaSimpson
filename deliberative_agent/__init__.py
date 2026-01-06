@@ -37,6 +37,31 @@ from .execution import (
 )
 from .memory import Lesson, Episode, Memory
 from .agent import DeliberativeAgent, AgentResult
+from .llm_providers import (
+    LLMProvider,
+    LLMConfig,
+    LLMResponse,
+    Message,
+    MessageRole,
+    ProviderFactory,
+    AnthropicProvider,
+    OpenAIProvider,
+    XAIProvider,
+    OpenRouterProvider,
+    GroqProvider,
+    DeepSeekProvider,
+)
+from .test_problems import (
+    TestProblem,
+    TestResult,
+    Difficulty,
+    Category,
+    ProblemSet,
+    MEDIUM_PROBLEMS,
+    HARD_PROBLEMS,
+    ALL_PROBLEMS,
+)
+from .benchmark_runner import BenchmarkRunner, BenchmarkRun, run_full_benchmark
 
 __version__ = "0.1.0"
 __all__ = [
@@ -73,4 +98,30 @@ __all__ = [
     # Agent
     "DeliberativeAgent",
     "AgentResult",
+    # LLM Providers
+    "LLMProvider",
+    "LLMConfig",
+    "LLMResponse",
+    "Message",
+    "MessageRole",
+    "ProviderFactory",
+    "AnthropicProvider",
+    "OpenAIProvider",
+    "XAIProvider",
+    "OpenRouterProvider",
+    "GroqProvider",
+    "DeepSeekProvider",
+    # Test Problems
+    "TestProblem",
+    "TestResult",
+    "Difficulty",
+    "Category",
+    "ProblemSet",
+    "MEDIUM_PROBLEMS",
+    "HARD_PROBLEMS",
+    "ALL_PROBLEMS",
+    # Benchmark
+    "BenchmarkRunner",
+    "BenchmarkRun",
+    "run_full_benchmark",
 ]
