@@ -38,6 +38,28 @@ from .execution import (
 from .memory import Lesson, Episode, Memory
 from .agent import DeliberativeAgent, AgentResult
 
+# LLM integration (optional imports - may not be available without extra dependencies)
+try:
+    from .llm_integration import (
+        LLMProvider,
+        LLMClient,
+        LLMMessage,
+        LLMResponse,
+        OpenAIClient,
+        AnthropicClient,
+        XAIClient,
+        GroqClient,
+        DeepSeekClient,
+        OpenRouterClient,
+        create_llm_client,
+        test_llm_client,
+    )
+    from .llm_executor import LLMActionExecutor, SimpleLLMExecutor
+    
+    _llm_available = True
+except ImportError:
+    _llm_available = False
+
 __version__ = "0.1.0"
 __all__ = [
     # Core types
@@ -74,3 +96,24 @@ __all__ = [
     "DeliberativeAgent",
     "AgentResult",
 ]
+
+# Add LLM exports if available
+if _llm_available:
+    __all__.extend([
+        # LLM Integration
+        "LLMProvider",
+        "LLMClient",
+        "LLMMessage",
+        "LLMResponse",
+        "OpenAIClient",
+        "AnthropicClient",
+        "XAIClient",
+        "GroqClient",
+        "DeepSeekClient",
+        "OpenRouterClient",
+        "create_llm_client",
+        "test_llm_client",
+        # LLM Executors
+        "LLMActionExecutor",
+        "SimpleLLMExecutor",
+    ])

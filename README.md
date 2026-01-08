@@ -304,6 +304,70 @@ pytest --cov=deliberative_agent
 pytest tests/test_core.py tests/test_planning.py
 ```
 
+## LLM Testing
+
+The agent can be tested with multiple LLM providers (OpenAI, Anthropic, XAI/Grok, Groq, DeepSeek, OpenRouter) on various problem difficulties.
+
+### Quick Start
+
+1. Install LLM dependencies:
+```bash
+pip install -e ".[llm]"
+```
+
+2. Set API keys:
+```bash
+export OPENAI_API_KEY=your_key
+export ANTHROPIC_API_KEY=your_key
+export XAI_API_KEY=your_key
+export GROQ_API_KEY=your_key
+export DEEPSEEK_API_KEY=your_key
+```
+
+3. Run comprehensive tests:
+```bash
+# All providers, all problems
+python run_llm_tests.py
+
+# Specific provider and difficulty
+python run_llm_tests.py --provider openai --difficulty medium
+
+# Using pytest
+pytest tests/test_llm_comprehensive.py -v -s
+```
+
+See [tests/README_TESTING.md](tests/README_TESTING.md) for detailed documentation on:
+- Setting up API keys
+- Running different test scenarios
+- Interpreting results
+- Adding custom problems
+- Adding new LLM providers
+
+### Example
+
+```python
+from deliberative_agent.llm_integration import LLMProvider, create_llm_client
+from deliberative_agent.llm_executor import SimpleLLMExecutor
+from deliberative_agent import DeliberativeAgent
+
+# Create LLM client
+client = create_llm_client(LLMProvider.OPENAI)
+
+# Create executor that uses the LLM
+executor = SimpleLLMExecutor(client)
+
+# Create agent with actions and executor
+agent = DeliberativeAgent(
+    actions=my_actions,
+    action_executor=executor
+)
+
+# Run the agent
+result = await agent.achieve(goal, initial_state)
+```
+
+See [example_llm_testing.py](example_llm_testing.py) for more examples.
+
 ## Philosophy
 
 This library embodies several key principles:
