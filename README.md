@@ -238,6 +238,46 @@ restored_memory = Memory.from_export(memory_data)
 agent = DeliberativeAgent(..., memory=restored_memory)
 ```
 
+## Swarm + Hierarchical Planning Extension (Design Sketch)
+
+If you want to evolve LisaSimpson into a **hierarchical swarm** with nodes, branches,
+and a GUI, the existing architecture already provides much of the substrate:
+
+### 1) Swarm Orchestration Layer
+
+Add a top-level **SwarmManager** that:
+- Builds a goal DAG from `Goal` dependencies and `CompositeGoal`s.
+- Decomposes high-level goals via `HierarchicalPlanner.register_decomposer`.
+- Assigns DAG nodes to specialized agents (per action/tool capabilities).
+- Executes independent branches in parallel and joins on dependencies.
+
+### 2) Memory Side-Channels
+
+Model dedicated memory channels (task/recent/conversation/project/temporal/user/internal)
+as **tags or partitions** in `Memory`:
+- Tag lessons/episodes with a `channel` label.
+- Use per-channel retrieval policies (e.g., recency for `recent`,
+  relevance for `task`, and persistence for `project`).
+- Keep channel-aware export/import for continuity across sessions.
+
+### 3) Multi-Phase Todo Graph
+
+Represent multi-phase todos as **Goal DAGs**:
+- Each todo item is a `Goal`.
+- Dependencies encode phase sequencing.
+- Use `CompositeGoal` to group parallelizable subgoals or milestone phases.
+
+### 4) GUI / Observability
+
+Provide a real-time dashboard that visualizes:
+- The goal/plan DAG (nodes, branches, dependencies).
+- Agent assignments and execution status.
+- Verification checkpoints and confidence/cost metrics.
+- Memory streams per channel (task/recent/project/user/etc.).
+
+This keeps the core planning/verification philosophy intact while enabling
+swarm-scale coordination and observability.
+
 ## Architecture
 
 ### Confidence System
