@@ -28,15 +28,25 @@ from .verification import (
     TestCheck,
     SemanticCheck,
 )
-from .planning import Plan, Planner
+from .planning import Plan, Planner, HierarchicalPlanner
 from .execution import (
     ActionExecutor,
     ExecutionStepResult,
     ExecutionResult,
     Executor,
 )
-from .memory import Lesson, Episode, Memory
+from .memory import Lesson, Episode, Memory, ChannelPolicy
 from .agent import DeliberativeAgent, AgentResult
+from .swarm import (
+    SwarmMember,
+    SwarmManager,
+    SwarmRunResult,
+    SwarmNodeResult,
+    SwarmDashboardSnapshot,
+    SwarmDashboardNode,
+    TodoItem,
+    build_todo_goal_graph,
+)
 
 # LLM integration (optional imports - may not be available without extra dependencies)
 try:
@@ -83,6 +93,7 @@ __all__ = [
     # Planning
     "Plan",
     "Planner",
+    "HierarchicalPlanner",
     # Execution
     "ActionExecutor",
     "ExecutionStepResult",
@@ -92,9 +103,19 @@ __all__ = [
     "Lesson",
     "Episode",
     "Memory",
+    "ChannelPolicy",
     # Agent
     "DeliberativeAgent",
     "AgentResult",
+    # Swarm
+    "SwarmMember",
+    "SwarmManager",
+    "SwarmRunResult",
+    "SwarmNodeResult",
+    "SwarmDashboardSnapshot",
+    "SwarmDashboardNode",
+    "TodoItem",
+    "build_todo_goal_graph",
 ]
 
 # Add LLM exports if available

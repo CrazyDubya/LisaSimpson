@@ -282,3 +282,56 @@ class TestMemory:
         assert len(imported.lessons) == 1
         assert imported.lessons[0].situation == "Test"
         assert imported.lessons[0].tags == ["tag1", "tag2"]
+
+    def test_channel_retrieval_uses_policy(self):
+        """Channel retrieval should honor channel-specific strategy."""
+        memory = Memory()
+
+        old_recent = Lesson(
+            situation="Context for task (older)",
+            insight="Old recent lesson",
+            outcome="success",
+            confidence=Confidence(0.5, ConfidenceSource.MEMORY),
+            timestamp=datetime.now() - timedelta(hours=2),
+        )
+        new_recent = Lesson(
+            situation="Context for task (newer)",
+            insight="New recent lesson",
+            outcome="success",
+            confidence=Confidence(0.4, ConfidenceSource.MEMORY),
+            timestamp=datetime.now(),
+        )
+        task_lesson = Lesson(
+            situation="Writing tests for validation",
+            insight="Task-relevant lesson",
+            outcome="success",
+            confidence=Confidence(0.9, ConfidenceSource.MEMORY),
+        )
+
+        memory.add_lesson(old_recent, channel="recent")
+        memory.add_lesson(new_recent, channel="recent")
+        memory.add_lesson(task_lesson, channel="task")
+
+        goal = Goal(
+            id="write_tests",
+            description="Writing tests for validation module",
+            predicate=lambda s: True,
+            verification=VerificationPlan([]),
+        )
+
+        recent = memory.retrieve_by_channel("recent")
+        task = memory.retrieve_relevant(goal, channel="task")
+
+        assert recent[0].insight == "New recent lesson"
+        assert task[0].insight == "Task-relevant lesson"
+
+    def test_export_import_preserves_channel_policies(self):
+        """Memory export/import should preserve channel policy settings."""
+        memory = Memory()
+        memory.set_channel_policy("project", strategy="persistence", limit=20)
+
+        exported = memory.export()
+        imported = Memory.from_export(exported)
+
+        assert imported.channel_policies["project"].strategy == "persistence"
+        assert imported.channel_policies["project"].limit == 20
