@@ -10,7 +10,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from datetime import datetime
-from typing import List, Optional, TYPE_CHECKING
+from typing import Dict, List, Literal, Optional, TYPE_CHECKING
 
 from .core import Confidence, ConfidenceSource
 
@@ -149,6 +149,21 @@ class Episode:
         )
 
 
+@dataclass
+class ChannelPolicy:
+    """
+    Retrieval policy for a memory channel.
+
+    Strategies:
+    - relevance: semantic matching first (task-centric)
+    - recency: newest lessons first (short-term working memory)
+    - persistence: stable/high-confidence lessons first (project/user memory)
+    """
+
+    strategy: Literal["relevance", "recency", "persistence"] = "relevance"
+    limit: Optional[int] = None
+
+
 class Memory:
     """
     Structured memory for the agent.
@@ -166,7 +181,8 @@ class Memory:
     def __init__(
         self,
         max_lessons: int = 1000,
-        max_episodes: int = 500
+        max_episodes: int = 500,
+        channel_policies: Optional[Dict[str, ChannelPolicy]] = None,
     ):
         """
         Initialize memory.
@@ -179,14 +195,23 @@ class Memory:
         self.episodes: List[Episode] = []
         self.max_lessons = max_lessons
         self.max_episodes = max_episodes
+        self.channel_policies = self._default_channel_policies()
+        if channel_policies:
+            self.channel_policies.update(channel_policies)
 
-    def add_lesson(self, lesson: Lesson) -> None:
+    def add_lesson(self, lesson: Lesson, channel: Optional[str] = None) -> None:
         """
         Add a lesson, handling contradictions and reinforcement.
 
         Args:
             lesson: Lesson to add
+            channel: Optional channel name (task/recent/project/etc.)
         """
+        if channel:
+            tag = self._channel_tag(channel)
+            if tag not in lesson.tags:
+                lesson.tags.append(tag)
+
         # Check for contradictions
         contradicting = [
             l for l in self.lessons
@@ -218,29 +243,44 @@ class Memory:
         # Enforce limits
         self._prune_lessons()
 
-    def add_episode(self, episode: Episode) -> None:
+    def add_episode(self, episode: Episode, channel: Optional[str] = None) -> None:
         """
         Add an episode to history.
 
         Args:
             episode: Episode to add
+            channel: Optional channel name
         """
+        if channel:
+            episode.metadata["channel"] = channel
         self.episodes.append(episode)
         self._prune_episodes()
 
-    def retrieve_relevant(self, goal: "Goal") -> List[Lesson]:
+    def retrieve_relevant(
+        self,
+        goal: "Goal",
+        channel: Optional[str] = None,
+        limit: Optional[int] = None,
+    ) -> List[Lesson]:
         """
         Find lessons relevant to a goal.
 
         Args:
             goal: Goal to find lessons for
+            channel: Optional channel name
+            limit: Optional max lessons to return
 
         Returns:
             List of relevant lessons, sorted by confidence
         """
+        if channel:
+            return self.retrieve_by_channel(channel, goal=goal, limit=limit)
+
         relevant = [l for l in self.lessons if l.applies_to(goal)]
         # Sort by confidence, highest first
         relevant.sort(key=lambda l: float(l.confidence), reverse=True)
+        if limit is not None:
+            return relevant[:limit]
         return relevant
 
     def retrieve_by_outcome(self, outcome: str) -> List[Lesson]:
@@ -266,6 +306,64 @@ class Memory:
             List of lessons with that tag
         """
         return [l for l in self.lessons if tag in l.tags]
+
+    def set_channel_policy(
+        self,
+        channel: str,
+        strategy: Literal["relevance", "recency", "persistence"],
+        limit: Optional[int] = None,
+    ) -> None:
+        """Set retrieval behavior for a memory channel."""
+        if strategy not in {"relevance", "recency", "persistence"}:
+            raise ValueError("strategy must be one of: relevance, recency, persistence")
+        self.channel_policies[channel] = ChannelPolicy(strategy=strategy, limit=limit)
+
+    def retrieve_by_channel(
+        self,
+        channel: str,
+        goal: Optional["Goal"] = None,
+        limit: Optional[int] = None,
+    ) -> List[Lesson]:
+        """
+        Retrieve lessons from a specific channel using channel policy.
+
+        Args:
+            channel: Channel name
+            goal: Optional goal for relevance filtering
+            limit: Optional override for maximum returned lessons
+        """
+        lessons = self.retrieve_by_tag(self._channel_tag(channel))
+        policy = self.channel_policies.get(channel, ChannelPolicy(strategy="relevance"))
+        effective_limit = limit if limit is not None else policy.limit
+
+        if policy.strategy == "relevance":
+            if goal is not None:
+                lessons = [lesson for lesson in lessons if lesson.applies_to(goal)]
+            lessons.sort(
+                key=lambda lesson: (float(lesson.confidence), lesson.timestamp),
+                reverse=True,
+            )
+        elif policy.strategy == "recency":
+            if goal is not None:
+                relevant = [lesson for lesson in lessons if lesson.applies_to(goal)]
+                if relevant:
+                    lessons = relevant
+            lessons.sort(key=lambda lesson: lesson.timestamp, reverse=True)
+        else:  # persistence
+            if goal is not None:
+                lessons = [lesson for lesson in lessons if lesson.applies_to(goal)]
+            lessons.sort(
+                key=lambda lesson: (
+                    lesson.applications,
+                    float(lesson.confidence),
+                    lesson.timestamp,
+                ),
+                reverse=True,
+            )
+
+        if effective_limit is not None:
+            return lessons[:effective_limit]
+        return lessons
 
     def get_success_rate(self, goal: Optional["Goal"] = None) -> float:
         """
@@ -341,6 +439,13 @@ class Memory:
     def export(self) -> dict:
         """Export memory to a dictionary for serialization."""
         return {
+            "channel_policies": {
+                channel: {
+                    "strategy": policy.strategy,
+                    "limit": policy.limit,
+                }
+                for channel, policy in self.channel_policies.items()
+            },
             "lessons": [
                 {
                     "situation": l.situation,
@@ -360,7 +465,8 @@ class Memory:
                     "plan_steps": e.plan_steps,
                     "result_status": e.result_status,
                     "timestamp": e.timestamp.isoformat(),
-                    "duration_ms": e.duration_ms
+                    "duration_ms": e.duration_ms,
+                    "metadata": e.metadata,
                 }
                 for e in self.episodes
             ]
@@ -369,7 +475,15 @@ class Memory:
     @classmethod
     def from_export(cls, data: dict) -> Memory:
         """Import memory from a dictionary."""
-        memory = cls()
+        raw_policies = data.get("channel_policies", {})
+        policies = {
+            channel: ChannelPolicy(
+                strategy=policy_data.get("strategy", "relevance"),
+                limit=policy_data.get("limit"),
+            )
+            for channel, policy_data in raw_policies.items()
+        }
+        memory = cls(channel_policies=policies)
 
         for l_data in data.get("lessons", []):
             lesson = Lesson(
@@ -394,7 +508,8 @@ class Memory:
                 result_status=e_data["result_status"],
                 lessons_extracted=[],  # Not preserved in export
                 timestamp=datetime.fromisoformat(e_data["timestamp"]),
-                duration_ms=e_data.get("duration_ms", 0.0)
+                duration_ms=e_data.get("duration_ms", 0.0),
+                metadata=e_data.get("metadata", {}),
             )
             memory.episodes.append(episode)
 
@@ -402,6 +517,20 @@ class Memory:
 
     def __repr__(self) -> str:
         return f"Memory(lessons={len(self.lessons)}, episodes={len(self.episodes)})"
+
+    def _default_channel_policies(self) -> Dict[str, ChannelPolicy]:
+        return {
+            "task": ChannelPolicy(strategy="relevance", limit=25),
+            "recent": ChannelPolicy(strategy="recency", limit=50),
+            "conversation": ChannelPolicy(strategy="relevance", limit=40),
+            "project": ChannelPolicy(strategy="persistence", limit=200),
+            "temporal": ChannelPolicy(strategy="recency", limit=30),
+            "user": ChannelPolicy(strategy="persistence", limit=100),
+            "internal": ChannelPolicy(strategy="relevance", limit=50),
+        }
+
+    def _channel_tag(self, channel: str) -> str:
+        return f"channel:{channel}"
 
 
 class LessonExtractor:

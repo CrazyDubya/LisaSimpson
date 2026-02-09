@@ -238,6 +238,93 @@ restored_memory = Memory.from_export(memory_data)
 agent = DeliberativeAgent(..., memory=restored_memory)
 ```
 
+## Swarm + Hierarchical Planning Extension
+
+The project now includes a concrete swarm runtime in
+`deliberative_agent/swarm.py`:
+
+- `SwarmManager` builds an executable goal DAG from dependencies, `CompositeGoal`,
+  and registered `HierarchicalPlanner` decomposers.
+- `SwarmManager.execute()` schedules independent branches in parallel and joins
+  dependency outputs into downstream state.
+- `SwarmMember` routes goals to specialized agents using
+  `goal.metadata["required_capabilities"]` / `["required_tools"]`.
+- `build_todo_goal_graph()` converts multi-phase todos into Goal DAG nodes.
+- `SwarmDashboardSnapshot` provides polling-friendly observability data for a UI.
+
+### Example: Multi-Phase Goal DAG
+
+```python
+import asyncio
+from deliberative_agent import (
+    DeliberativeAgent,
+    Planner,
+    HierarchicalPlanner,
+    SwarmManager,
+    SwarmMember,
+    TodoItem,
+    build_todo_goal_graph,
+    WorldState,
+)
+
+# Convert todo phases/dependencies into goals.
+todo_goals = build_todo_goal_graph([
+    TodoItem(id="phase1_design", description="Design plan"),
+    TodoItem(
+        id="phase2_build",
+        description="Build implementation",
+        dependencies=["phase1_design"],
+        required_capabilities=["build"],
+    ),
+    TodoItem(
+        id="phase3_verify",
+        description="Run verification and tests",
+        dependencies=["phase2_build"],
+        required_capabilities=["qa"],
+    ),
+])
+
+# Use your existing actions + executor implementations.
+planner = HierarchicalPlanner(Planner(actions))
+
+build_agent = DeliberativeAgent(actions=actions, action_executor=build_executor)
+qa_agent = DeliberativeAgent(actions=actions, action_executor=qa_executor)
+
+swarm = SwarmManager(
+    hierarchical_planner=planner,
+    members=[
+        SwarmMember(name="builder", agent=build_agent, capabilities={"build"}),
+        SwarmMember(name="qa", agent=qa_agent, capabilities={"qa"}),
+    ],
+    max_parallelism=2,
+)
+
+async def run():
+    result = await swarm.execute(todo_goals, WorldState())
+    print(result.status)
+    print(swarm.get_dashboard_snapshot())
+
+asyncio.run(run())
+```
+
+### Memory Side-Channels
+
+`Memory` now supports channel-aware retrieval policies:
+
+```python
+# Attach lessons to specific channels.
+memory.add_lesson(lesson, channel="task")
+memory.add_lesson(lesson, channel="recent")
+
+# Tune retrieval behavior per channel.
+memory.set_channel_policy("recent", strategy="recency", limit=50)
+memory.set_channel_policy("project", strategy="persistence", limit=200)
+
+# Retrieve with channel policy.
+task_lessons = memory.retrieve_relevant(goal, channel="task")
+recent_lessons = memory.retrieve_by_channel("recent")
+```
+
 ## Architecture
 
 ### Confidence System
