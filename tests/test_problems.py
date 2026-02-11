@@ -38,9 +38,9 @@ class Difficulty(str, Enum):
 
 
 @dataclass
-class TestProblem:
-    """A test problem for evaluating the agent."""
-    
+class Scenario:
+    """A scenario (test problem) for evaluating the agent."""
+
     name: str
     description: str
     difficulty: Difficulty
@@ -51,7 +51,7 @@ class TestProblem:
     max_steps: int = 10
 
 
-def create_medium_problems() -> List[TestProblem]:
+def create_medium_problems() -> List[Scenario]:
     """Create medium difficulty test problems."""
     problems = []
     
@@ -111,7 +111,7 @@ def create_medium_problems() -> List[TestProblem]:
         verification=VerificationPlan([])
     )
     
-    problems.append(TestProblem(
+    problems.append(Scenario(
         name="Sequential Project Setup",
         description="Set up a new project with directories, git, and README in sequence",
         difficulty=Difficulty.MEDIUM,
@@ -179,7 +179,7 @@ def create_medium_problems() -> List[TestProblem]:
         verification=VerificationPlan([])
     )
     
-    problems.append(TestProblem(
+    problems.append(Scenario(
         name="Parallel Component Development",
         description="Develop frontend and backend in parallel, then integrate",
         difficulty=Difficulty.MEDIUM,
@@ -244,7 +244,7 @@ def create_medium_problems() -> List[TestProblem]:
         verification=VerificationPlan([])
     )
     
-    problems.append(TestProblem(
+    problems.append(Scenario(
         name="Conditional Data Processing",
         description="Fetch data from appropriate source and process it",
         difficulty=Difficulty.MEDIUM,
@@ -258,7 +258,7 @@ def create_medium_problems() -> List[TestProblem]:
     return problems
 
 
-def create_hard_problems() -> List[TestProblem]:
+def create_hard_problems() -> List[Scenario]:
     """Create hard difficulty test problems."""
     problems = []
     
@@ -347,7 +347,7 @@ def create_hard_problems() -> List[TestProblem]:
         verification=VerificationPlan([])
     )
     
-    problems.append(TestProblem(
+    problems.append(Scenario(
         name="Safe Production Deployment",
         description="Deploy to production with backup, testing, verification, and rollback capability",
         difficulty=Difficulty.HARD,
@@ -458,7 +458,7 @@ def create_hard_problems() -> List[TestProblem]:
         verification=VerificationPlan([])
     )
     
-    problems.append(TestProblem(
+    problems.append(Scenario(
         name="Complex Backend Development",
         description="Develop complete backend system with complex dependencies",
         difficulty=Difficulty.HARD,
@@ -520,7 +520,7 @@ def create_hard_problems() -> List[TestProblem]:
             name="add_monitoring",
             description="Add monitoring and logging",
             preconditions=[
-                lambda s: s.has_fact("solution_implemented") is not None
+                lambda s: len(s.get_facts_by_predicate("solution_implemented")) > 0
             ],
             effects=[
                 Fact("monitoring_added", (), Confidence(0.9, ConfidenceSource.VERIFICATION))
@@ -532,7 +532,7 @@ def create_hard_problems() -> List[TestProblem]:
             name="add_tests",
             description="Add comprehensive test suite",
             preconditions=[
-                lambda s: s.has_fact("solution_implemented") is not None
+                lambda s: len(s.get_facts_by_predicate("solution_implemented")) > 0
             ],
             effects=[
                 Fact("tests_added", (), Confidence(0.95, ConfidenceSource.VERIFICATION))
@@ -542,19 +542,27 @@ def create_hard_problems() -> List[TestProblem]:
         ),
     ]
     
+    def quality_goal_satisfied(s):
+        """Require solution_implemented, monitoring, tests, and quality_level >= 70."""
+        # Use get_facts_by_predicate where facts have non-empty args (e.g. solution_implemented('optimized'))
+        if not s.get_facts_by_predicate("solution_implemented"):
+            return False
+        if s.has_fact("monitoring_added") is None:
+            return False
+        if s.has_fact("tests_added") is None:
+            return False
+        # quality_level facts have args (level,) e.g. (60,), (80,), (95,)
+        quality_facts = s.get_facts_by_predicate("quality_level")
+        return any(len(f.args) > 0 and f.args[0] >= 70 for f in quality_facts)
+
     goal3 = Goal(
         id="quality_solution",
         description="Implement solution with quality >= 70, monitoring, and tests",
-        predicate=lambda s: (
-            s.has_fact("solution_implemented") is not None and
-            s.has_fact("monitoring_added") is not None and
-            s.has_fact("tests_added") is not None and
-            (s.has_fact("quality_level") is not None)
-        ),
+        predicate=quality_goal_satisfied,
         verification=VerificationPlan([])
     )
     
-    problems.append(TestProblem(
+    problems.append(Scenario(
         name="Quality Solution Under Constraints",
         description="Implement quality solution within budget and time constraints",
         difficulty=Difficulty.HARD,
@@ -568,12 +576,18 @@ def create_hard_problems() -> List[TestProblem]:
     return problems
 
 
-def get_all_problems() -> List[TestProblem]:
+def get_all_problems() -> List[Scenario]:
     """Get all test problems (medium and hard)."""
     return create_medium_problems() + create_hard_problems()
 
 
-def get_problems_by_difficulty(difficulty: str) -> List[TestProblem]:
+def get_scenarios_for_run() -> List[Scenario]:
+    """All scenarios runnable from the app: presets + tool scenarios."""
+    from tests.tool_scenarios import get_tool_scenarios
+    return get_all_problems() + get_tool_scenarios()
+
+
+def get_problems_by_difficulty(difficulty: str) -> List[Scenario]:
     """
     Get problems of a specific difficulty.
     

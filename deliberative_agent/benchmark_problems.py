@@ -618,6 +618,8 @@ Implement using modified Dijkstra's algorithm.""",
     ),
 
     # 10. Complex Semantic Analysis
+    # NOTE: The code below is intentionally vulnerable (SQL injection, XSS, pickle) for the
+    # LLM to identify in a security code review. It is prompt content only, not executed.
     TestProblem(
         id="hard_semantic_01",
         name="Code Review Analysis",

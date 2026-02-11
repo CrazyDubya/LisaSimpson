@@ -41,6 +41,9 @@ class AgentResult:
     concerns: List[str] = field(default_factory=list)
     lessons: List[Lesson] = field(default_factory=list)
     alternatives: List[Plan] = field(default_factory=list)
+    # For failures: why it failed and what the user could try
+    failure_reason: Optional[str] = None
+    suggested_next_steps: List[str] = field(default_factory=list)
 
     @property
     def success(self) -> bool:
@@ -146,11 +149,17 @@ class DeliberativeAgent:
 
         if not planning_result.success:
             analysis = self._analyze_impossibility(goal, state, planning_result)
+            suggested = self._suggest_next_steps_for_no_plan(
+                goal, state, planning_result, analysis
+            )
             return AgentResult(
                 status="no_plan_found",
-                message="Cannot find a way to achieve this goal.",
+                message=f"Cannot find a way to achieve this goal. {planning_result.reason}",
                 concerns=[analysis],
-                state=state
+                state=state,
+                failure_reason=planning_result.reason,
+                suggested_next_steps=suggested,
+                questions=suggested[:3],  # first few as questions for user
             )
 
         plan = planning_result.plan
@@ -369,6 +378,29 @@ class DeliberativeAgent:
             )
 
         return "; ".join(reasons)
+
+    def _suggest_next_steps_for_no_plan(
+        self,
+        goal: Goal,
+        state: WorldState,
+        planning_result: PlanningResult,
+        analysis: str,
+    ) -> List[str]:
+        """Suggest what the user could do after no plan was found."""
+        suggestions: List[str] = []
+        reason = (planning_result.reason or "").lower()
+        if "exploration limit" in reason or "limit reached" in reason:
+            suggestions.append("Increase planner max_explored (goal may need more steps than currently allowed).")
+            suggestions.append("Simplify the goal or add intermediate actions.")
+        if "dependencies not met" in reason or "prerequisites" in analysis.lower():
+            suggestions.append("Satisfy the listed dependencies or prerequisites first.")
+            suggestions.append("Check if the initial state includes all required facts.")
+        if "no plan exists" in reason or "no actions" in analysis.lower():
+            suggestions.append("Relax the goal predicate or add actions that can achieve the missing conditions.")
+            suggestions.append("Verify that some action sequence can produce the goal state (preconditions and effects).")
+        if not suggestions:
+            suggestions.append("Review the goal and available actions; the planner could not find a path.")
+        return suggestions
 
     def _evaluate_plan(
         self,

@@ -51,10 +51,16 @@ htmlcov/
 comprehensive_test_results.json
 medium_test_results.json
 hard_test_results.json
+value_report.json
+benchmark_results.json
 
-# Environment
+# Environment and secrets
 .env
+.env.*
 .env.local
+*.pem
+value_report_llm.json
+data/web_api_keys.env
 
 # Type checking
 .mypy_cache/

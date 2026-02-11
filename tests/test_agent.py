@@ -18,6 +18,7 @@ from deliberative_agent.execution import (
 )
 from deliberative_agent.memory import Memory, Lesson
 from deliberative_agent.agent import DeliberativeAgent, AgentResult
+from deliberative_agent.planning import Planner
 
 
 class MockExecutor:
@@ -141,6 +142,91 @@ class TestDeliberativeAgent:
 
         assert not result.success
         assert result.status == "no_plan_found"
+
+    @pytest.mark.asyncio
+    async def test_agent_no_plan_found_dependencies_gives_feedback(self):
+        """When plan fails due to unsatisfied dependencies, result has failure_reason and suggested_next_steps."""
+        dep_goal = Goal(
+            id="prereq",
+            description="Prerequisite",
+            predicate=lambda s: s.has_fact("prereq_done") is not None,
+            verification=VerificationPlan([]),
+        )
+        main_goal = Goal(
+            id="main",
+            description="Main goal",
+            predicate=lambda s: s.has_fact("done") is not None,
+            verification=VerificationPlan([]),
+            dependencies=[dep_goal],
+        )
+        action_done = (
+            action("do_it", "Do the thing")
+            .adds_fact("done")
+            .with_cost(1.0)
+            .build()
+        )
+        executor = MockExecutor()
+        agent = DeliberativeAgent(
+            actions=[action_done],
+            action_executor=executor,
+        )
+        state = WorldState()
+        result = await agent.achieve(main_goal, state)
+
+        assert not result.success
+        assert result.status == "no_plan_found"
+        assert result.failure_reason is not None
+        assert "dependencies" in result.failure_reason.lower() or "prerequisites" in result.failure_reason.lower()
+        assert len(result.suggested_next_steps) > 0
+        assert any("depend" in s.lower() or "prerequis" in s.lower() for s in result.suggested_next_steps)
+        assert len(result.questions) > 0
+
+    @pytest.mark.asyncio
+    async def test_agent_no_plan_found_exploration_limit_gives_feedback(self):
+        """When plan fails due to exploration limit, result has failure_reason and suggested_next_steps."""
+        step1 = (
+            action("step1", "First step")
+            .adds_fact("step1_done")
+            .with_cost(1.0)
+            .build()
+        )
+        step2 = (
+            action("step2", "Second step")
+            .requires_fact("step1_done")
+            .adds_fact("step2_done")
+            .with_cost(1.0)
+            .build()
+        )
+        step3 = (
+            action("step3", "Third step")
+            .requires_fact("step2_done")
+            .adds_fact("goal_achieved")
+            .with_cost(1.0)
+            .build()
+        )
+        goal_obj = Goal(
+            id="three_step",
+            description="Need three steps",
+            predicate=lambda s: s.has_fact("goal_achieved") is not None,
+            verification=VerificationPlan([]),
+        )
+        executor = MockExecutor()
+        planner = Planner([step1, step2, step3], max_explored=2, max_depth=10)
+        agent = DeliberativeAgent(
+            actions=[step1, step2, step3],
+            action_executor=executor,
+            planner=planner,
+        )
+        state = WorldState()
+        result = await agent.achieve(goal_obj, state)
+
+        assert not result.success
+        assert result.status == "no_plan_found"
+        assert result.failure_reason is not None
+        assert "exploration" in result.failure_reason.lower() or "limit" in result.failure_reason.lower()
+        assert len(result.suggested_next_steps) > 0
+        assert any("max_explored" in s.lower() or "simplify" in s.lower() for s in result.suggested_next_steps)
+        assert len(result.questions) > 0
 
     @pytest.mark.asyncio
     async def test_agent_learns_from_success(self):

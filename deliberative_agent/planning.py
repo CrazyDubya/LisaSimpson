@@ -174,6 +174,17 @@ class Planner:
             _, _, state, actions, cost = heappop(frontier)
             explored += 1
 
+            # First goal state we pop has minimum cost (A* optimal)
+            if goal.is_satisfied(state):
+                plan = Plan(
+                    steps=actions,
+                    expected_final_state=state,
+                    verification_points=self._create_verification_points(actions),
+                    confidence=self._estimate_confidence(actions),
+                    estimated_cost=cost
+                )
+                return PlanningResult.success_result(plan, explored)
+
             state_hash = hash(state)
             if state_hash in visited:
                 continue
@@ -191,14 +202,11 @@ class Planner:
                 new_cost = cost + action.cost
 
                 if goal.is_satisfied(new_state):
-                    plan = Plan(
-                        steps=new_actions,
-                        expected_final_state=new_state,
-                        verification_points=self._create_verification_points(new_actions),
-                        confidence=self._estimate_confidence(new_actions),
-                        estimated_cost=new_cost
-                    )
-                    return PlanningResult.success_result(plan, explored)
+                    # Push goal state so we may pop it when it has lowest priority
+                    counter += 1
+                    priority = new_cost + self.heuristic(new_state, goal)
+                    heappush(frontier, (priority, counter, new_state, new_actions, new_cost))
+                    continue
 
                 counter += 1
                 priority = new_cost + self.heuristic(new_state, goal)

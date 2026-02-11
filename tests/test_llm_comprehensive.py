@@ -28,17 +28,17 @@ from deliberative_agent.llm_integration import (
     test_llm_client,
 )
 from deliberative_agent.llm_executor import SimpleLLMExecutor
-from test_problems import (
-    TestProblem,
+from tests.test_problems import (
+    Scenario,
     get_all_problems,
     get_problems_by_difficulty,
 )
 
 
 @dataclass
-class TestResult:
-    """Result of running a test problem."""
-    
+class RunResult:
+    """Result of running one scenario with an LLM."""
+
     provider: str
     model: str
     problem_name: str
@@ -50,12 +50,15 @@ class TestResult:
     confidence: Optional[float] = None
     error_message: Optional[str] = None
     lessons_learned: int = 0
+    # When status is no_plan_found (or other failure): for user feedback
+    failure_reason: Optional[str] = None
+    suggested_next_steps: Optional[List[str]] = None
 
 
 @dataclass
-class TestSummary:
-    """Summary of all test results."""
-    
+class RunSummary:
+    """Summary of all LLM run results."""
+
     total_tests: int
     successful_tests: int
     failed_tests: int
@@ -63,7 +66,7 @@ class TestSummary:
     average_execution_time: float
     results_by_provider: Dict[str, Dict]
     results_by_difficulty: Dict[str, Dict]
-    all_results: List[TestResult]
+    all_results: List[RunResult]
     timestamp: str
 
 
@@ -73,29 +76,29 @@ class LLMTestHarness:
     def __init__(self, verbose: bool = True):
         """
         Initialize test harness.
-        
+
         Args:
             verbose: Whether to print detailed progress
         """
         self.verbose = verbose
-        self.results: List[TestResult] = []
+        self.results: List[RunResult] = []
 
     async def test_problem_with_provider(
         self,
-        problem: TestProblem,
+        problem: Scenario,
         provider: LLMProvider,
         model: Optional[str] = None
-    ) -> TestResult:
+    ) -> RunResult:
         """
-        Test a single problem with a specific LLM provider.
-        
+        Test a single scenario with a specific LLM provider.
+
         Args:
-            problem: Test problem to solve
+            problem: Scenario to solve
             provider: LLM provider to use
             model: Optional specific model name
-            
+
         Returns:
-            TestResult with outcome
+            RunResult with outcome
         """
         start_time = time.time()
         
@@ -131,8 +134,34 @@ class LLMTestHarness:
                 print(f"Time: {execution_time:.2f}s")
                 if result.lessons:
                     print(f"Lessons learned: {len(result.lessons)}")
-            
-            return TestResult(
+                # When planning failed: show why and how to get further direction
+                if result.status == "no_plan_found":
+                    print(f"\n--- Why it failed ---")
+                    print(f"  {result.message}")
+                    if getattr(result, 'concerns', None):
+                        for c in result.concerns:
+                            print(f"  Concern: {c}")
+                    if getattr(result, 'failure_reason', None):
+                        print(f"  Planner: {result.failure_reason}")
+                    if getattr(result, 'suggested_next_steps', None) and result.suggested_next_steps:
+                        print(f"\n--- Suggested next steps (give further direction) ---")
+                        for i, step in enumerate(result.suggested_next_steps, 1):
+                            print(f"  {i}. {step}")
+                    print()
+
+            # Build error_message for failures so reports show what went wrong
+            error_message = None
+            failure_reason = getattr(result, 'failure_reason', None)
+            suggested_next_steps = getattr(result, 'suggested_next_steps', None) or []
+            if not success:
+                parts = [result.message or result.status]
+                if failure_reason:
+                    parts.append(f"Reason: {failure_reason}")
+                if suggested_next_steps:
+                    parts.append("Next steps: " + "; ".join(suggested_next_steps[:3]))
+                error_message = " ".join(parts)
+
+            return RunResult(
                 provider=provider.value,
                 model=client.get_model_name(),
                 problem_name=problem.name,
@@ -142,7 +171,10 @@ class LLMTestHarness:
                 steps_taken=len(result.plan.steps) if result.plan else 0,
                 execution_time_seconds=execution_time,
                 confidence=None,  # Could extract from result
-                lessons_learned=len(result.lessons) if result.lessons else 0
+                lessons_learned=len(result.lessons) if result.lessons else 0,
+                error_message=error_message,
+                failure_reason=failure_reason,
+                suggested_next_steps=suggested_next_steps if suggested_next_steps else None,
             )
             
         except Exception as e:
@@ -151,7 +183,7 @@ class LLMTestHarness:
             if self.verbose:
                 print(f"\nERROR: {str(e)}")
             
-            return TestResult(
+            return RunResult(
                 provider=provider.value,
                 model=model or "default",
                 problem_name=problem.name,
@@ -167,7 +199,7 @@ class LLMTestHarness:
         self,
         providers: Optional[List[LLMProvider]] = None,
         difficulty: Optional[str] = None
-    ) -> TestSummary:
+    ) -> RunSummary:
         """
         Run comprehensive tests across providers and problems.
         
@@ -176,7 +208,7 @@ class LLMTestHarness:
             difficulty: Filter by difficulty ('medium', 'hard', or None for all)
             
         Returns:
-            TestSummary with all results
+            RunSummary with all results
         """
         if providers is None:
             # Try to detect which providers have API keys
@@ -214,10 +246,10 @@ class LLMTestHarness:
         # Generate summary
         return self._generate_summary()
 
-    def _generate_summary(self) -> TestSummary:
+    def _generate_summary(self) -> RunSummary:
         """Generate summary from results."""
         if not self.results:
-            return TestSummary(
+            return RunSummary(
                 total_tests=0,
                 successful_tests=0,
                 failed_tests=0,
@@ -270,8 +302,8 @@ class LLMTestHarness:
                 "success_rate": difficulty_success / len(results) if results else 0.0,
                 "avg_time": sum(r.execution_time_seconds for r in results) / len(results)
             }
-        
-        return TestSummary(
+
+        return RunSummary(
             total_tests=total,
             successful_tests=successful,
             failed_tests=failed,
@@ -283,7 +315,7 @@ class LLMTestHarness:
             timestamp=datetime.now().isoformat()
         )
 
-    def print_summary(self, summary: TestSummary) -> None:
+    def print_summary(self, summary: RunSummary) -> None:
         """Print a formatted summary."""
         print(f"\n{'#'*70}")
         print(f"TEST SUMMARY")
@@ -321,7 +353,11 @@ class LLMTestHarness:
             status_icon = "✓" if result.success else "✗"
             print(f"{status_icon} [{result.provider}] {result.problem_name} - {result.status} ({result.execution_time_seconds:.2f}s)")
             if result.error_message:
-                print(f"  Error: {result.error_message}")
+                print(f"  {result.error_message}")
+            if getattr(result, 'failure_reason', None):
+                print(f"  Why: {result.failure_reason}")
+            if getattr(result, 'suggested_next_steps', None) and result.suggested_next_steps:
+                print(f"  Next: {'; '.join(result.suggested_next_steps[:2])}")
         
         print(f"\n{'#'*70}\n")
 

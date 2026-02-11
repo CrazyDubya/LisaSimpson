@@ -21,8 +21,8 @@ import asyncio
 import sys
 import os
 
-# Add parent directory to path to import modules
-sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+# Add project root to path so "tests" and "deliberative_agent" resolve
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 
 from tests.test_llm_comprehensive import LLMTestHarness
 from deliberative_agent.llm_integration import LLMProvider

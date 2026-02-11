@@ -13,7 +13,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from typing import Callable, List, Optional, TYPE_CHECKING
 
-from .core import WorldState
+from .core import WorldState, Fact
 
 if TYPE_CHECKING:
     pass
@@ -60,6 +60,9 @@ class Action:
     reverse_action: Optional[Action] = None
     confidence_modifier: float = 1.0  # Multiplier for confidence in this action
     metadata: dict = field(default_factory=dict)
+    # When True, planner still uses effects to find a plan, but SimpleLLMExecutor
+    # does not apply effects (goal only achievable via ToolCapableExecutor + new_facts).
+    require_tool_execution: bool = False
 
     def applicable(self, state: WorldState) -> bool:
         """
@@ -110,7 +113,12 @@ class Action:
         """
         new_state = state.copy()
         for effect in self.effects:
-            new_state = effect.apply(new_state)
+            if isinstance(effect, Effect):
+                new_state = effect.apply(new_state)
+            elif isinstance(effect, Fact):
+                new_state.add_fact(effect)
+            else:
+                raise TypeError(f"effect must be Effect or Fact, got {type(effect)}")
         return new_state
 
     def can_undo(self) -> bool:

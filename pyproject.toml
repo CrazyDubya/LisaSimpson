@@ -46,6 +46,11 @@ llm = [
     "anthropic>=0.18",
     "groq>=0.4",
 ]
+web = [
+    "fastapi>=0.100",
+    "uvicorn[standard]>=0.22",
+    "httpx>=0.24",
+]
 
 [project.urls]
 Repository = "https://github.com/CrazyDubya/LisaSimpson"
