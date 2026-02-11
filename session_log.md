@@ -1,0 +1,85 @@
+# Session log (between-commit notes)
+
+Short log of what changed or was decided between git commits. Supplement to commit history.
+
+---
+
+## 2025-02-09
+
+- **Bearings / testing**
+  - Added `TESTING.md`: project bearings, CLI commands for unit and LLM tests, when Playwright applies (only if a web UI is added).
+  - Fixed `run_llm_tests.py`: `sys.path` now uses project root (one `dirname`) so `tests` and `deliberative_agent` import correctly when run from repo root.
+  - Created this `session_log.md` for between-commit notes.
+- **Test run**
+  - Unit tests (excluding LLM) run with:  
+    `uv run pytest tests/ -v --ignore=tests/test_llm_comprehensive.py --ignore=tests/test_llm_providers.py`
+  - ~~One test currently fails: `test_plan_prefers_lower_cost`~~ Fixed: planner now pushes goal states onto the A* frontier and returns when popping a goal state (so first goal popped has minimum cost).
+- **Action effects fix**
+  - `Action.apply()` in `deliberative_agent/actions.py` now accepts both `Effect` and `Fact` in `self.effects`. Callers (e.g. `example_llm_testing.py`, `tests/test_problems.py`) pass `Fact` objects; the builder produces `Effect` objects. Both are supported.
+- **Comprehensive test import**
+  - `tests/test_llm_comprehensive.py`: changed `from test_problems import` to `from tests.test_problems import` so `run_llm_tests.py` (run from project root) can import the test problems.
+- **OpenRouter runs (simple → benchmark → comprehensive)**
+  - Simple: `example_llm_testing.py` — Success (2 steps, OpenRouter).
+  - Benchmark: `run_llm_benchmark.py --difficulty medium` — 10 medium problems × 3 OpenRouter models (Claude 3.5, GPT-4 Turbo, Llama 3.1 405B), 100% accuracy each; results in `benchmark_results.json`.
+  - Comprehensive: `run_llm_tests.py --provider openrouter --difficulty medium` — 3/3 medium problems passed (100%), ~5.14s avg; results in `comprehensive_test_results.json`.
+- **Real-world value benchmark**
+  - Added `deliberative_agent/value_benchmark.py`: real-world scenarios (Safe Deploy, CI Pipeline, Backend with Dependencies, Bug Fix with Regression), **BaselineRunner** ("Ralph Wiggum" — random-order execution, no planning), **MockExecutor** for fast runs, `run_value_benchmark()` and `ValueReport`.
+  - Added `run_value_benchmark.py`: CLI `--llm`, `--baseline-runs`, `--seed`, `--output`, `--quiet`.
+  - Typical result (mock executor, 8 baseline runs/scenario): Deliberative 100% success, 4.5 avg steps; Baseline ~38% success, ~6.5 avg steps when success. Shows clear value from planning (order and success rate).
+  - TESTING.md updated with value benchmark section; `.gitignore` includes `value_report.json`, `benchmark_results.json`.
+- **Testing pass (all green)**
+  - **Planner cost fix**: In `deliberative_agent/planning.py`, when an action achieves the goal we now push that state onto the A* frontier instead of returning immediately; we return when we *pop* a goal state, so the first goal popped has minimum cost (A* optimal). Fixes `test_plan_prefers_lower_cost`.
+  - **test_llm_client fixture**: Added `tests/conftest.py` with a `client` fixture that provides an LLM client from the first provider with an API key; skips the test when no key is set. Removes the "fixture 'client' not found" error.
+  - Full suite: `uv run pytest tests/ -v --ignore=tests/test_llm_providers.py` → **79 passed, 4 skipped** (skipped = LLM tests when no API key).
+  - **NEXT_STEPS.md** added: suggestions for next work derived from this testing pass (verification value, memory/learning, harder scenarios, CI, etc.).
+- **Live run with single OpenRouter key**
+  - **Simple example** (`example_llm_testing.py`): Success, 2 steps, ~4.6s.
+  - **Value benchmark with LLM** (`run_value_benchmark.py --llm --baseline-runs 3`): Deliberative 100% (4 scenarios, 4.5 avg steps, ~37s total); Baseline 42% (3 runs/scenario), avg steps when success 7.4. Report: `value_report_llm.json`.
+  - **Comprehensive LLM tests – medium**: 3/3 (100%), ~5.2s avg (Sequential Project Setup, Parallel Component Development, Conditional Data Processing).
+  - **Comprehensive LLM tests – hard**: 2/3 (66.7%); failed: “Quality Solution Under Constraints” (no_plan_found in ~0.02s — planner limit, not LLM).
+  - **test_llm_client** (pytest with key): PASSED, ~1.4s.
+- **Failure logic and user feedback**
+  - **Root cause (Quality Solution)**: Goal and preconditions used `has_fact("solution_implemented")` (args=()) but facts use args like `('optimized',)`, so the goal was never satisfied and preconditions for add_monitoring/add_tests failed. Fixed by using `get_facts_by_predicate("solution_implemented")` and `get_facts_by_predicate("quality_level")` with a quality >= 70 check.
+  - **Agent feedback on no_plan_found**: `AgentResult` now has `failure_reason` (planner reason) and `suggested_next_steps` (list of concrete suggestions). Agent sets `message` to include the planner reason and fills `questions` with the first few suggestions. New `_suggest_next_steps_for_no_plan()` maps "exploration limit", "dependencies not met", "no plan exists" to actionable steps.
+  - **Harness**: On failure, TestResult stores `failure_reason` and `suggested_next_steps`; verbose run prints "Why it failed" and "Suggested next steps (give further direction)"; DETAILED RESULTS and JSON include them so the user can act on them.
+  - Hard tests with OpenRouter after fix: 3/3 (100%).
+- **Security and input safety**
+  - **No secrets in repo:** API keys only from env; `.gitignore` updated (`.env.*`, `*.pem`, `value_report_llm.json`).
+  - **`deliberative_agent/input_safety.py`:** Normalize/sanitize LLM-bound content: NFKC, strip zero-width/invisible and control chars, collapse whitespace, Cyrillic lookalike replacement, emoji limit. `detect_hidden_or_abusive()`, `sanitize_string_for_prompt()`, `wrap_content_for_prompt()`.
+  - **`llm_executor.py`:** All interpolated strings (action name, description, state context) passed through `normalize_for_llm()`; system prompt instructs model to ignore embedded instructions; user message ends with `PROMPT_CONTENT_DELIMITER` (`---END CONTENT---`).
+  - **`SECURITY.md`:** Documents keys, input safety, prompt injection mitigation, benchmark intentional vulnerable code.
+  - **`benchmark_problems.py`:** Comment added that SQL/XSS/pickle in prompt are intentional for security code-review problem.
+  - **Tests:** `tests/test_input_safety.py` for normalization, zero-width, control, Cyrillic, sanitize report.
+- **Code review (CODE_REVIEW_2026.md)**
+  - Verdict: valid and worthy to continue (clear value prop, value benchmark, failure feedback, input safety).
+  - Optimizations: minor (WorldState copy, planner dedup) — no critical perf issues.
+  - Enhancements: CI, verification value scenario, memory value re-run; NEXT_STEPS retained as backlog.
+  - Improvements: document or later unify two LLM layers; rename Test* dataclasses to avoid pytest warnings; mypy pass.
+  - Cleanup: optional doc consolidation; scripts and .gitignore already in good shape.
+- **Enhancements and cleanups (post-review)**
+  - **CI:** `.github/workflows/ci.yml` runs on push/PR to main/master: `uv sync --extra dev`, pytest (ignore only `test_llm_providers`; `test_llm_comprehensive` runs but skips when no API key), then `run_value_benchmark.py --baseline-runs 5 --quiet`.
+  - **Verification value:** New scenario `verified_deploy` in `value_benchmark.py`: deploy + verify actions, goal with `VerificationPlan([_FactPresentCheck("verified")])`. Deliberative run exercises semantic verification path.
+  - **Memory value:** `run_memory_value_demo()` runs each scenario twice with shared agent memory; `run_value_benchmark.py --memory` prints run1 vs run2 steps/success.
+  - **Dataclass renames (pytest):** `tests/test_problems.py`: `TestProblem` → `Scenario`; `tests/test_llm_comprehensive.py`: `TestResult` → `RunResult`, `TestSummary` → `RunSummary`. Updated `scripts/run_real_world_failure_feedback.py` and harness references.
+  - **LLM layers doc:** `docs/LLM_LAYERS.md` explains `llm_integration` (public API) vs `llm_providers` (benchmark/config).
+  - **Doc archive:** `COMPREHENSIVE_CODE_REVIEW.md` and `IMPLEMENTATION_SUMMARY.md` moved to `docs/archive/`; `docs/archive/README.md` added.
+  - **Doc layout:** `PROJECT_EXPANSION_IDEAS.md` moved to `docs/PROJECT_EXPANSION_IDEAS.md`. `tests/README_TESTING.md` shortened to point to `../TESTING.md` plus LLM setup and scenario list. `README.md` gained a "Documentation" section linking TESTING, SECURITY, NEXT_STEPS, docs/LLM_LAYERS, docs/archive, docs/PROJECT_EXPANSION_IDEAS.
+- **Web UI**
+  - **Backend:** `web/main.py` (FastAPI): `GET /api/health`, `GET /api/scenarios`, `POST /api/run` (scenario_name, use_llm), `POST /api/value-benchmark`. Serves `web/static/index.html` at `/`.
+  - **Serialization:** `web/serializers.py` – world_state_to_dict, plan_to_dict, verification_to_dict, lessons_to_dict, agent_result_to_dict.
+  - **Frontend:** Single page at `web/static/index.html` – scenario dropdown (from test_problems), “Use LLM” checkbox, Run button; result shows status, plan steps, final state facts, verification, lessons, failure_reason, suggested_next_steps. Value benchmark section: baseline runs input, Run benchmark, table of deliberative vs baseline per scenario.
+  - **Deps:** `pyproject.toml` optional `web = ["fastapi>=0.100", "uvicorn[standard]>=0.22"]`. Run from repo root: `uv run uvicorn web.main:app --reload --port 8000` then open http://localhost:8000/.
+  - **Docs:** README “Web UI” section, AGENT.md and TESTING.md updated.
+- **Web UI: API keys + custom tasks**
+  - **API keys:** `web/keys_store.py` – keys stored in `data/web_api_keys.env` (gitignored, chmod 0o600). Whitelist: OPENROUTER_API_KEY, OPENAI_API_KEY, ANTHROPIC_API_KEY, XAI_API_KEY, GROQ_API_KEY, DEEPSEEK_API_KEY. `GET /api/keys/status` (which keys are set, never values), `POST /api/keys` (save), `DELETE /api/keys/{key_name}` (remove). Load into `os.environ` at startup and on save so LLM runs use them.
+  - **Custom tasks:** `POST /api/run` accepts optional `custom_scenario`: `{ name, description, initial_facts: [{ predicate, args }], goal_facts: [{ predicate, args }] }`. Backend builds a Scenario (WorldState + Goal + chained Actions), runs agent, returns same result shape. Frontend: “New task” card with name, description, initial facts list, goal facts list (order = dependency chain), Use LLM, Run custom task. SECURITY.md updated for web key storage.
+- **Tools comparison: test that actually requires tools**
+  - **Problem:** "No tools" was passing the "tool-friendly" scenario because the action had an effect that added `search_done`; SimpleLLMExecutor just applied `action.apply(state)` so the goal was satisfied without any real tool call. Tests were effectively faking tool use.
+  - **Fix:** New scenario "Web research (tools REQUIRED)" with an action that has **empty effects**. The only way to add `search_done` is for the executor to call `web_search` and return `new_facts` in the done response (ToolCapableExecutor path). SimpleLLMExecutor never adds facts from the LLM, so without tools the goal is never satisfied.
+  - **Tests:** `_make_tool_required_scenario()` replaces `_make_tool_friendly_scenario()`; `test_tools_comparison_multiple_scenarios` asserts for that scenario: `not no_ok` and `with_ok`. New `test_tool_required_fails_without_tools_passes_with_tools` runs only the tool-required scenario and asserts fail without tools / pass with tools. Run with `OPENROUTER_API_KEY` or `OPENAI_API_KEY`: `uv run pytest tests/test_agent_tools_comparison.py -v -s`.
+- **E2E integration: unified scenarios and API tests**
+  - **Single scenario source:** `tests/tool_scenarios.py` defines the four tool/accuracy scenarios; `tests/test_problems.get_scenarios_for_run()` returns presets + tool scenarios. Web (`GET /api/scenarios`, `POST /api/run`), `run_tools_comparison.py`, and `tests/test_agent_tools_comparison.py` all use `get_scenarios_for_run()` so the same scenarios appear in the UI dropdown and in CLI/tests.
+  - **run_tools_comparison.py:** Uses `get_scenarios_for_run()`; added `--all` to run every scenario (no-tools vs with-tools table and aggregate metrics). Single-scenario mode still supported via `--scenario "Name"`.
+  - **tests/test_agent_tools_comparison.py:** Removed inline scenario builders; imports shared list via `TOOLS_COMPARISON_SCENARIO_NAMES` and `get_scenarios_for_run()`.
+  - **tests/test_web_api.py:** New API integration tests using FastAPI TestClient: health, scenarios list, POST /api/run (no-LLM preset, unknown scenario 404, with-LLM preset and tool scenario when keys set). Web extra required.
+  - **TESTING.md:** Updated tools comparison and API test docs; SERPAPI_API_KEY noted for web-search scenarios.

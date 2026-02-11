@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>LisaSimpson – Deliberative Agent</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: #0f1419;
+      --surface: #1a2332;
+      --surface2: #243044;
+      --border: #3d4f6b;
+      --text: #e6edf3;
+      --text-muted: #8b9cb3;
+      --accent: #58a6ff;
+      --success: #3fb950;
+      --warning: #d29922;
+      --error: #f85149;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: 'IBM Plex Sans', system-ui, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      line-height: 1.5;
+      min-height: 100vh;
+    }
+    .container { max-width: 960px; margin: 0 auto; padding: 1.5rem; }
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin: 0 0 0.25rem 0;
+      letter-spacing: -0.02em;
+    }
+    .tagline { color: var(--text-muted); font-size: 0.9rem; margin-bottom: 1.5rem; }
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 1.25rem 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .card h2 { font-size: 1.1rem; margin: 0 0 1rem 0; color: var(--accent); }
+    .form-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; margin-bottom: 1rem; }
+    label { font-weight: 500; min-width: 100px; }
+    select {
+      font-family: inherit;
+      font-size: 0.95rem;
+      padding: 0.4rem 0.75rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      min-width: 220px;
+    }
+    button {
+      font-family: inherit;
+      font-size: 0.95rem;
+      font-weight: 500;
+      padding: 0.5rem 1rem;
+      background: var(--accent);
+      color: var(--bg);
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+    button:hover { filter: brightness(1.1); }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
+    button.secondary {
+      background: var(--surface2);
+      color: var(--text);
+      border: 1px solid var(--border);
+    }
+    .checkbox { display: flex; align-items: center; gap: 0.5rem; }
+    .checkbox input { width: 18px; height: 18px; accent-color: var(--accent); }
+    .status-badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.85rem;
+      font-weight: 500;
+    }
+    .status-badge.success { background: rgba(63, 185, 80, 0.2); color: var(--success); }
+    .status-badge.failure { background: rgba(248, 81, 73, 0.2); color: var(--error); }
+    .status-badge.needs_input { background: rgba(210, 153, 34, 0.2); color: var(--warning); }
+    pre, .mono { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; }
+    .result-section { margin-top: 1rem; }
+    .result-section h3 { font-size: 0.95rem; margin: 0.5rem 0 0.25rem 0; color: var(--text-muted); }
+    .result-section ul { margin: 0; padding-left: 1.25rem; }
+    .result-section li { margin: 0.2rem 0; }
+    .facts-list { list-style: none; padding-left: 0; }
+    .facts-list li { padding: 0.2rem 0; border-bottom: 1px solid var(--surface2); }
+    .step-list { list-style: none; padding-left: 0; }
+    .step-list li { padding: 0.35rem 0; display: flex; gap: 0.75rem; align-items: center; border-bottom: 1px solid var(--surface2); }
+    .step-list .cost { color: var(--text-muted); font-size: 0.9rem; }
+    .error-msg { color: var(--error); margin-top: 0.5rem; }
+    .loading { color: var(--text-muted); }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { text-align: left; padding: 0.5rem 0.75rem; border-bottom: 1px solid var(--border); }
+    th { color: var(--text-muted); font-weight: 500; }
+    input[type="number"] {
+      font-family: inherit;
+      padding: 0.4rem 0.5rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      width: 80px;
+    }
+    .verification-pass { color: var(--success); }
+    .verification-fail { color: var(--error); }
+    .suggested-steps { background: var(--surface2); padding: 0.75rem 1rem; border-radius: 6px; margin-top: 0.5rem; }
+    input[type="text"], input[type="password"], textarea {
+      font-family: inherit;
+      font-size: 0.95rem;
+      padding: 0.4rem 0.5rem;
+      background: var(--surface2);
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      width: 100%;
+      max-width: 280px;
+    }
+    textarea { min-height: 60px; max-width: 100%; }
+    .fact-row { display: flex; gap: 0.5rem; align-items: center; margin-bottom: 0.4rem; }
+    .fact-row input.predicate { flex: 0 0 140px; }
+    .fact-row input.args { flex: 1; min-width: 120px; }
+    .key-status { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 0.5rem; }
+    .key-status span { font-size: 0.85rem; padding: 0.2rem 0.5rem; border-radius: 4px; background: var(--surface2); }
+    .key-status span.set { color: var(--success); }
+    .key-status span.unset { color: var(--text-muted); }
+    .btn-sm { padding: 0.25rem 0.5rem; font-size: 0.85rem; }
+    .tool-tabs { display: flex; gap: 0.25rem; margin-bottom: 1rem; flex-wrap: wrap; }
+    .tool-tab { padding: 0.4rem 0.75rem; font-size: 0.9rem; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; color: var(--text); cursor: pointer; }
+    .tool-tab:hover { background: var(--border); }
+    .tool-tab.active { background: var(--accent); color: var(--bg); border-color: var(--accent); }
+    .tool-pane { margin-bottom: 0.5rem; }
+    .tool-output { background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 0.75rem; font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; white-space: pre-wrap; word-break: break-word; max-height: 400px; overflow-y: auto; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>LisaSimpson</h1>
+    <p class="tagline">Deliberative Agent – plan, verify, learn. Run scenarios, custom tasks, and value benchmark from the UI.</p>
+
+    <!-- API Keys (stored securely on server, never shown) -->
+    <section class="card">
+      <h2>API keys</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 1rem 0;">
+        Keys are stored in <code>data/web_api_keys.env</code> (gitignored, chmod 600). Used for &quot;Use LLM&quot; runs. Values are never returned.
+      </p>
+      <div class="form-row">
+        <label for="keyName">Key</label>
+        <select id="keyName">
+          <option value="">Select key…</option>
+        </select>
+        <input type="password" id="keyValue" placeholder="Paste key value…" autocomplete="off" />
+        <button id="keySaveBtn" class="secondary">Save</button>
+      </div>
+      <div id="keyError" class="error-msg" style="display: none;"></div>
+      <div id="keyStatus" class="key-status">Loading…</div>
+    </section>
+
+    <!-- Run agent -->
+    <section class="card">
+      <h2>Run agent</h2>
+      <div class="form-row">
+        <label for="scenario">Scenario</label>
+        <select id="scenario">
+          <option value="">Loading…</option>
+        </select>
+      </div>
+      <div class="form-row">
+        <label></label>
+        <div class="checkbox">
+          <input type="checkbox" id="use_llm" />
+          <span>Use LLM executor (needs API key)</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <label></label>
+        <button id="runBtn">Run</button>
+      </div>
+      <div id="runError" class="error-msg" style="display: none;"></div>
+      <div id="runResult" class="result-section" style="display: none;"></div>
+    </section>
+
+    <!-- Custom task (new task: initial facts + goal facts) -->
+    <section class="card">
+      <h2>New task</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 1rem 0;">
+        Define a custom task with initial state (facts) and goal facts. The agent will plan a sequence to achieve the goal. Order of goal facts defines the dependency chain.
+      </p>
+      <div class="form-row">
+        <label for="customName">Name</label>
+        <input type="text" id="customName" placeholder="e.g. Deploy to staging" />
+      </div>
+      <div class="form-row">
+        <label for="customDesc">Description</label>
+        <input type="text" id="customDesc" placeholder="Short description" />
+      </div>
+      <div class="form-row">
+        <label>Initial facts</label>
+        <div>
+          <div id="initialFactsList"></div>
+          <button type="button" id="addInitialFact" class="secondary btn-sm">+ Add fact</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <label>Goal facts (order matters)</label>
+        <div>
+          <div id="goalFactsList"></div>
+          <button type="button" id="addGoalFact" class="secondary btn-sm">+ Add goal fact</button>
+        </div>
+      </div>
+      <div class="form-row">
+        <label></label>
+        <div class="checkbox">
+          <input type="checkbox" id="customUseLlm" />
+          <span>Use LLM executor</span>
+        </div>
+      </div>
+      <div class="form-row">
+        <label></label>
+        <button id="runCustomBtn">Run custom task</button>
+      </div>
+      <div id="customError" class="error-msg" style="display: none;"></div>
+      <div id="customResult" class="result-section" style="display: none;"></div>
+    </section>
+
+    <!-- Value benchmark -->
+    <section class="card">
+      <h2>Value benchmark</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 1rem 0;">
+        Compare deliberative (plan then execute) vs baseline (random order). Uses mock executor (no LLM).
+      </p>
+      <div class="form-row">
+        <label for="baselineRuns">Baseline runs per scenario</label>
+        <input type="number" id="baselineRuns" value="5" min="1" max="20" />
+        <button id="benchmarkBtn" class="secondary">Run benchmark</button>
+      </div>
+      <div id="benchmarkError" class="error-msg" style="display: none;"></div>
+      <div id="benchmarkResult" style="display: none; margin-top: 1rem;"></div>
+    </section>
+
+    <!-- Tools: browse, bash, read file, write file -->
+    <section class="card">
+      <h2>Tools</h2>
+      <p style="color: var(--text-muted); font-size: 0.9rem; margin: 0 0 1rem 0;">
+        Web browse, search (Serp), bash (project root), sandboxed code runner (Python), read/write file (project only).
+      </p>
+      <div class="tool-tabs">
+        <button type="button" class="tool-tab active" data-tool="bash">Bash</button>
+        <button type="button" class="tool-tab" data-tool="browse">Browse</button>
+        <button type="button" class="tool-tab" data-tool="search">Search</button>
+        <button type="button" class="tool-tab" data-tool="snippet">Run code</button>
+        <button type="button" class="tool-tab" data-tool="read_file">Read file</button>
+        <button type="button" class="tool-tab" data-tool="write_file">Write file</button>
+      </div>
+      <div id="toolBash" class="tool-pane">
+        <div class="form-row">
+          <label for="bashCmd">Command</label>
+          <input type="text" id="bashCmd" placeholder="e.g. ls -la" style="max-width: 100%; flex: 1;" />
+        </div>
+        <div class="form-row">
+          <label for="bashCwd">Cwd (optional)</label>
+          <input type="text" id="bashCwd" placeholder="e.g. . or subdir" style="max-width: 200px;" />
+        </div>
+        <button type="button" id="toolRunBash" class="secondary">Run</button>
+      </div>
+      <div id="toolBrowse" class="tool-pane" style="display: none;">
+        <div class="form-row">
+          <label for="browseUrl">URL</label>
+          <input type="text" id="browseUrl" placeholder="https://example.com" style="max-width: 100%; flex: 1;" />
+        </div>
+        <button type="button" id="toolRunBrowse" class="secondary">Fetch</button>
+      </div>
+      <div id="toolSearch" class="tool-pane" style="display: none;">
+        <div class="form-row">
+          <label for="searchQuery">Query</label>
+          <input type="text" id="searchQuery" placeholder="e.g. Python asyncio tutorial" style="max-width: 100%; flex: 1;" />
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0 0 0.5rem 0;">Uses Serp API (Google). Add Serp (Web Search) key in API Keys.</p>
+        <button type="button" id="toolRunSearch" class="secondary">Search</button>
+      </div>
+      <div id="toolSnippet" class="tool-pane" style="display: none;">
+        <div class="form-row">
+          <label for="snippetLang">Language</label>
+          <select id="snippetLang" style="max-width: 120px;">
+            <option value="python">Python</option>
+          </select>
+        </div>
+        <div class="form-row">
+          <label for="snippetCode">Code</label>
+          <textarea id="snippetCode" rows="8" placeholder="print('Hello')\nfor i in range(3):\n    print(i * i)" style="font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem;"></textarea>
+        </div>
+        <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0 0 0.5rem 0;">Sandboxed: temp dir, 15s timeout, 50 KiB output limit.</p>
+        <button type="button" id="toolRunSnippet" class="secondary">Run</button>
+      </div>
+      <div id="toolReadFile" class="tool-pane" style="display: none;">
+        <div class="form-row">
+          <label for="readFilePath">Path (under project)</label>
+          <input type="text" id="readFilePath" placeholder="e.g. README.md" style="max-width: 100%; flex: 1;" />
+        </div>
+        <button type="button" id="toolRunReadFile" class="secondary">Read</button>
+      </div>
+      <div id="toolWriteFile" class="tool-pane" style="display: none;">
+        <div class="form-row">
+          <label for="writeFilePath">Path (under project)</label>
+          <input type="text" id="writeFilePath" placeholder="e.g. data/note.txt" style="max-width: 100%; flex: 1;" />
+        </div>
+        <div class="form-row">
+          <label for="writeFileContent">Content</label>
+          <textarea id="writeFileContent" rows="4" placeholder="File content…"></textarea>
+        </div>
+        <button type="button" id="toolRunWriteFile" class="secondary">Write</button>
+      </div>
+      <div id="toolOutput" class="tool-output" style="display: none; margin-top: 1rem;"></div>
+    </section>
+  </div>
+
+  <script>
+    const API = '/api';
+
+    async function getScenarios() {
+      const r = await fetch(API + '/scenarios');
+      if (!r.ok) throw new Error(r.statusText);
+      const data = await r.json();
+      const sel = document.getElementById('scenario');
+      sel.innerHTML = '<option value="">Choose a scenario…</option>';
+      (data.scenarios || []).forEach(s => {
+        const opt = document.createElement('option');
+        opt.value = s.name;
+        opt.textContent = `${s.name} (${s.difficulty})`;
+        sel.appendChild(opt);
+      });
+    }
+
+    function escapeHtml(s) {
+      const div = document.createElement('div');
+      div.textContent = s;
+      return div.innerHTML;
+    }
+
+    document.getElementById('runBtn').addEventListener('click', async () => {
+      const scenario = document.getElementById('scenario').value;
+      const useLlm = document.getElementById('use_llm').checked;
+      const runError = document.getElementById('runError');
+      const runResult = document.getElementById('runResult');
+      runError.style.display = 'none';
+      runResult.style.display = 'none';
+      if (!scenario) { runError.textContent = 'Select a scenario.'; runError.style.display = 'block'; return; }
+      const btn = document.getElementById('runBtn');
+      btn.disabled = true;
+      btn.textContent = 'Running…';
+      try {
+        const r = await fetch(API + '/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scenario_name: scenario, use_llm: useLlm }),
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          runError.textContent = data.detail || r.statusText;
+          runError.style.display = 'block';
+          return;
+        }
+        renderRunResult(data, runResult);
+      } catch (e) {
+        runError.textContent = e.message || 'Request failed';
+        runError.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Run';
+      }
+    });
+
+    document.getElementById('benchmarkBtn').addEventListener('click', async () => {
+      const baselineRuns = parseInt(document.getElementById('baselineRuns').value, 10) || 5;
+      const errEl = document.getElementById('benchmarkError');
+      const resEl = document.getElementById('benchmarkResult');
+      errEl.style.display = 'none';
+      resEl.style.display = 'block';
+      resEl.innerHTML = '<p class="loading">Running benchmark…</p>';
+      const btn = document.getElementById('benchmarkBtn');
+      btn.disabled = true;
+      try {
+        const r = await fetch(API + '/value-benchmark', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ baseline_runs: baselineRuns }),
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          errEl.textContent = data.detail || r.statusText;
+          errEl.style.display = 'block';
+          resEl.style.display = 'none';
+          return;
+        }
+        const scenarios = data.scenarios || [];
+        const delib = (data.deliberative_results || []).reduce((acc, x) => { acc[x.scenario_id] = x; return acc; }, {});
+        const baseByScenario = (data.baseline_results || []).reduce((acc, x) => {
+          if (!acc[x.scenario_id]) acc[x.scenario_id] = [];
+          acc[x.scenario_id].push(x);
+          return acc;
+        }, {});
+        let table = '<table><thead><tr><th>Scenario</th><th>Deliberative</th><th>Baseline</th></tr></thead><tbody>';
+        scenarios.forEach(sid => {
+          const d = delib[sid];
+          const blist = baseByScenario[sid] || [];
+          const n = blist.length;
+          const nOk = blist.filter(b => b.success).length;
+          const avgSteps = n ? (blist.reduce((a, b) => a + b.steps, 0) / n).toFixed(1) : '–';
+          const avgCost = n ? (blist.reduce((a, b) => a + b.total_cost, 0) / n).toFixed(1) : '–';
+          const dStr = d ? `✓ ${d.steps} steps, cost ${d.total_cost}` : '–';
+          const bStr = n ? `${nOk}/${n} (${((100 * nOk) / n).toFixed(0)}%), avg steps ${avgSteps}, cost ${avgCost}` : '–';
+          table += `<tr><td>${escapeHtml(sid)}</td><td>${dStr}</td><td>${bStr}</td></tr>`;
+        });
+        table += '</tbody></table>';
+        if (data.summary) {
+          table += `<p style="margin-top:0.75rem; color: var(--text-muted);">
+            Deliberative success: ${(100 * (data.summary.deliberative_success_rate || 0)).toFixed(0)}% &nbsp;|&nbsp;
+            Baseline success: ${(100 * (data.summary.baseline_success_rate || 0)).toFixed(0)}%
+          </p>`;
+        }
+        resEl.innerHTML = table;
+      } catch (e) {
+        errEl.textContent = e.message || 'Request failed';
+        errEl.style.display = 'block';
+        resEl.style.display = 'none';
+      } finally {
+        btn.disabled = false;
+      }
+    });
+
+    getScenarios().catch(() => {
+      document.getElementById('scenario').innerHTML = '<option value="">Failed to load scenarios</option>';
+    });
+
+    // --- Tools: tab switch ---
+    document.querySelectorAll('.tool-tab').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.tool-tab').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tool-pane').forEach(p => p.style.display = 'none');
+        btn.classList.add('active');
+        const id = 'tool' + (btn.dataset.tool === 'bash' ? 'Bash' : btn.dataset.tool === 'browse' ? 'Browse' : btn.dataset.tool === 'search' ? 'Search' : btn.dataset.tool === 'snippet' ? 'Snippet' : btn.dataset.tool === 'read_file' ? 'ReadFile' : 'WriteFile');
+        const pane = document.getElementById(id);
+        if (pane) pane.style.display = 'block';
+      });
+    });
+
+    function showToolOutput(text) {
+      const el = document.getElementById('toolOutput');
+      el.style.display = 'block';
+      el.textContent = text;
+    }
+    async function runTool(tool, params) {
+      const r = await fetch(API + '/tools/run', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ tool, params }) });
+      const data = await r.json().catch(() => ({}));
+      if (!r.ok) { showToolOutput('Error: ' + (data.detail || r.statusText)); return; }
+      if (data.success === false) { showToolOutput('Error: ' + (data.error || JSON.stringify(data))); return; }
+      const out = [];
+      if (data.stdout !== undefined) out.push('[stdout]\n' + data.stdout);
+      if (data.stderr !== undefined) out.push('[stderr]\n' + data.stderr);
+      if (data.returncode !== undefined) out.push('[returncode] ' + data.returncode);
+      if (data.content !== undefined) out.push(data.content);
+      if (data.status_code !== undefined) out.push('Status: ' + data.status_code);
+      if (data.truncated) out.push('\n(truncated)');
+      if (data.path !== undefined) out.push('Wrote: ' + data.path);
+      if (data.results !== undefined) {
+        out.push('Query: ' + (data.query || ''));
+        data.results.forEach((r, i) => { out.push('\n' + (i + 1) + '. ' + (r.title || '') + '\n   ' + (r.link || '') + '\n   ' + (r.snippet || '')); });
+      }
+      if (out.length === 0) showToolOutput(JSON.stringify(data, null, 2));
+      else showToolOutput(out.join('\n'));
+    }
+    document.getElementById('toolRunBash').addEventListener('click', () => {
+      const cmd = document.getElementById('bashCmd').value.trim();
+      const cwd = document.getElementById('bashCwd').value.trim() || undefined;
+      runTool('run_bash', { command: cmd, cwd });
+    });
+    document.getElementById('toolRunBrowse').addEventListener('click', () => {
+      runTool('browse_web', { url: document.getElementById('browseUrl').value.trim() });
+    });
+    document.getElementById('toolRunSearch').addEventListener('click', () => {
+      runTool('web_search', { query: document.getElementById('searchQuery').value.trim() });
+    });
+    document.getElementById('toolRunSnippet').addEventListener('click', () => {
+      runTool('run_snippet', { language: document.getElementById('snippetLang').value, code: document.getElementById('snippetCode').value });
+    });
+    document.getElementById('toolRunReadFile').addEventListener('click', () => {
+      runTool('read_file', { path: document.getElementById('readFilePath').value.trim() });
+    });
+    document.getElementById('toolRunWriteFile').addEventListener('click', () => {
+      runTool('write_file', { path: document.getElementById('writeFilePath').value.trim(), content: document.getElementById('writeFileContent').value });
+    });
+
+    // --- API Keys ---
+    const KEY_LABELS = {
+      OPENAI_API_KEY: 'OpenAI',
+      OPENROUTER_API_KEY: 'OpenRouter',
+      XAI_API_KEY: 'Grok',
+      ANTHROPIC_API_KEY: 'Anthropic',
+      GROQ_API_KEY: 'Groq',
+      DEEPSEEK_API_KEY: 'DeepSeek',
+      SERPAPI_API_KEY: 'Serp (Web Search)',
+    };
+    function keyLabel(key) { return KEY_LABELS[key] || key; }
+    async function loadKeysStatus() {
+      const r = await fetch(API + '/keys/status');
+      if (!r.ok) return;
+      const data = await r.json();
+      const sel = document.getElementById('keyName');
+      const allowed = data.allowed || [];
+      sel.innerHTML = '<option value="">Select key…</option>';
+      allowed.forEach(k => {
+        const opt = document.createElement('option');
+        opt.value = k;
+        opt.textContent = keyLabel(k);
+        sel.appendChild(opt);
+      });
+      const status = data.keys || {};
+      const el = document.getElementById('keyStatus');
+      el.innerHTML = Object.entries(status).map(([name, set]) =>
+        `<span class="${set ? 'set' : 'unset'}">${keyLabel(name)}: ${set ? '✓' : '–'}</span>`
+      ).join('');
+    }
+    document.getElementById('keySaveBtn').addEventListener('click', async () => {
+      const keyName = document.getElementById('keyName').value;
+      const value = document.getElementById('keyValue').value;
+      const errEl = document.getElementById('keyError');
+      errEl.style.display = 'none';
+      if (!keyName) { errEl.textContent = 'Select a key.'; errEl.style.display = 'block'; return; }
+      if (!value) { errEl.textContent = 'Enter the key value.'; errEl.style.display = 'block'; return; }
+      try {
+        const r = await fetch(API + '/keys', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ key_name: keyName, value: value }),
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) { errEl.textContent = data.detail || r.statusText; errEl.style.display = 'block'; return; }
+        document.getElementById('keyValue').value = '';
+        loadKeysStatus();
+      } catch (e) {
+        errEl.textContent = e.message || 'Failed';
+        errEl.style.display = 'block';
+      }
+    });
+    loadKeysStatus();
+
+    // --- Custom task: fact rows ---
+    function makeFactRow(containerId, predicatePlaceholder, argsPlaceholder) {
+      const div = document.createElement('div');
+      div.className = 'fact-row';
+      div.innerHTML = `
+        <input type="text" class="predicate" placeholder="${predicatePlaceholder}" />
+        <input type="text" class="args" placeholder="${argsPlaceholder}" />
+        <button type="button" class="secondary btn-sm remove-fact">Remove</button>
+      `;
+      div.querySelector('.remove-fact').addEventListener('click', () => div.remove());
+      document.getElementById(containerId).appendChild(div);
+      return div;
+    }
+    document.getElementById('addInitialFact').addEventListener('click', () => makeFactRow('initialFactsList', 'predicate', 'args (comma-sep, e.g. web_app)'));
+    document.getElementById('addGoalFact').addEventListener('click', () => makeFactRow('goalFactsList', 'predicate', 'args (comma-sep)'));
+    makeFactRow('initialFactsList', 'e.g. project_type', 'e.g. web_app');
+    makeFactRow('goalFactsList', 'e.g. readme_created', 'leave empty or e.g. main');
+
+    function collectFacts(containerId) {
+      const rows = document.querySelectorAll(`#${containerId} .fact-row`);
+      return Array.from(rows).map(row => {
+        const pred = (row.querySelector('input.predicate') || {}).value.trim();
+        const argsStr = (row.querySelector('input.args') || {}).value.trim();
+        const args = argsStr ? argsStr.split(',').map(s => s.trim()).filter(Boolean) : [];
+        return { predicate: pred || 'unknown', args };
+      }).filter(f => f.predicate && f.predicate !== 'unknown');
+    }
+
+    document.getElementById('runCustomBtn').addEventListener('click', async () => {
+      const name = document.getElementById('customName').value.trim() || 'Custom task';
+      const description = document.getElementById('customDesc').value.trim() || 'Custom task';
+      const initial_facts = collectFacts('initialFactsList');
+      const goal_facts = collectFacts('goalFactsList');
+      const errEl = document.getElementById('customError');
+      const resEl = document.getElementById('customResult');
+      errEl.style.display = 'none';
+      resEl.style.display = 'none';
+      if (!goal_facts.length) { errEl.textContent = 'Add at least one goal fact.'; errEl.style.display = 'block'; return; }
+      const btn = document.getElementById('runCustomBtn');
+      btn.disabled = true;
+      btn.textContent = 'Running…';
+      try {
+        const r = await fetch(API + '/run', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            scenario_name: '',
+            use_llm: document.getElementById('customUseLlm').checked,
+            custom_scenario: { name, description, initial_facts, goal_facts },
+          }),
+        });
+        const data = await r.json().catch(() => ({}));
+        if (!r.ok) {
+          errEl.textContent = data.detail || r.statusText;
+          errEl.style.display = 'block';
+          return;
+        }
+        resEl.style.display = 'block';
+        renderRunResult(data, resEl);
+      } catch (e) {
+        errEl.textContent = e.message || 'Request failed';
+        errEl.style.display = 'block';
+      } finally {
+        btn.disabled = false;
+        btn.textContent = 'Run custom task';
+      }
+    });
+
+    function renderRunResult(data, targetEl) {
+      targetEl = targetEl || document.getElementById('runResult');
+      targetEl.style.display = 'block';
+      const statusClass = data.success ? 'success' : (data.status === 'no_plan_found' || data.status === 'failed' ? 'failure' : 'needs_input');
+      let html = `
+        <p><span class="status-badge ${statusClass}">${data.status}</span></p>
+        ${data.message ? `<p>${escapeHtml(data.message)}</p>` : ''}
+      `;
+      if (data.plan && data.plan.steps && data.plan.steps.length) {
+        html += `<h3>Plan (${data.plan.steps.length} steps, cost ${data.plan.estimated_cost})</h3><ul class="step-list">`;
+        data.plan.steps.forEach((s, i) => {
+          html += `<li><span>${i + 1}. ${escapeHtml(s.name)}</span><span class="cost">cost ${s.cost}</span></li>`;
+        });
+        html += '</ul>';
+      }
+      if (data.state && data.state.length) {
+        html += '<h3>Final state (facts)</h3><ul class="facts-list">';
+        data.state.forEach(f => {
+          const args = (f.args && f.args.length) ? '(' + f.args.join(', ') + ')' : '()';
+          html += `<li>${escapeHtml(f.predicate)}${args} <span class="cost">conf ${f.confidence}</span></li>`;
+        });
+        html += '</ul>';
+      }
+      if (data.verification) {
+        const v = data.verification;
+        html += `<h3>Verification</h3><p class="${v.satisfied ? 'verification-pass' : 'verification-fail'}">${v.summary}</p>`;
+        if (v.check_results && v.check_results.length) {
+          html += '<ul>';
+          v.check_results.forEach(c => { html += `<li>${c.passed ? '✓' : '✗'} ${escapeHtml(c.message)}</li>`; });
+          html += '</ul>';
+        }
+      }
+      if (data.lessons && data.lessons.length) {
+        html += '<h3>Lessons</h3><ul>';
+        data.lessons.forEach(l => {
+          html += `<li><strong>${escapeHtml(l.situation)}</strong>: ${escapeHtml(l.insight)} (${l.outcome})</li>`;
+        });
+        html += '</ul>';
+      }
+      if (data.failure_reason) {
+        html += `<h3>Why it failed</h3><p>${escapeHtml(data.failure_reason)}</p>`;
+      }
+      if (data.suggested_next_steps && data.suggested_next_steps.length) {
+        html += '<h3>Suggested next steps</h3><div class="suggested-steps"><ul>';
+        data.suggested_next_steps.forEach(s => { html += `<li>${escapeHtml(s)}</li>`; });
+        html += '</ul></div>';
+      }
+      targetEl.innerHTML = html;
+    }
+  </script>
+</body>
+</html>
